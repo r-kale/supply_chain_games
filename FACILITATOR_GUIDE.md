@@ -4,6 +4,11 @@ How to run each game as a team learning session. Every game ends with a built-in
 screen generated from the session's own data — your job as facilitator is mostly to set
 up the experience, protect the surprise, and lead the discussion afterward.
 
+**Tournaments:** every game's debrief has a **Copy result code** button. Have each team
+paste its code into the chat (or read it out); paste them all into the
+[Comparison Board](compare.html) and project the leaderboards. Nothing is uploaded —
+the code itself carries the result.
+
 General tips:
 
 - **Don't pre-teach the concept.** The "aha" comes from experiencing the failure first
@@ -98,10 +103,48 @@ Collect predictions before starting — write a few on a whiteboard.
 
 ---
 
+## 🤝 The Contract Game (incentives &amp; coordination) — 25–35 min with discussion
+
+**Setup:** solo or pairs, 8 seasons. Frame it plainly: "You're the manufacturer;
+maximize *your* profit." Don't mention buybacks — the input field is there, and
+discovering it is the game.
+
+**Debrief discussion**
+
+1. Poll: who offered a buyback? Who found terms where the retailer ordered 120?
+   Most players spend early seasons raising or lowering the wholesale price and
+   watching the pie shrink or their share vanish.
+2. Name the trap: **double marginalization** — two firms each taking a margin order
+   less than one integrated firm would. The wholesale-only chart shows there is *no*
+   wholesale price that fixes it.
+3. Walk the coordination line (w = $9, b = $8 → retailer orders 120 and you keep most
+   of the pie). Key sequence: **grow the pie first, then negotiate the split.**
+4. Real-world hooks: Blockbuster revenue sharing, book returns, markdown money,
+   vendor-managed inventory. Ask: what contracts in *your* business quietly shrink
+   the pie?
+
+---
+
+## ⚖️ The Batch Size Game (EOQ) — 15–20 min with discussion
+
+**Setup:** solo; race on fewest attempts to reach the 2% zone.
+
+**Debrief discussion**
+
+1. Compare best batch sizes — then point out the cost curve's flat bottom: ±20% on Q
+   costs ~2%. Precision in Q is not where the money is.
+2. The lever that matters: **shrink the fixed cost K** (setup time, paperwork, freight
+   minimums) and the optimal batch shrinks by √. That's the EOQ math behind lean's
+   setup-time obsession (SMED) and behind "batch of one" flow.
+3. Tie back to the Beer Game: order batching is a classic bullwhip amplifier.
+
+---
+
 ## Suggested sequences
 
 - **Half-day "systems thinking in supply chains":** Beer Game → Dice Game → discussion.
-- **Inventory fundamentals session:** Newsvendor → Warehouse Consolidation.
+- **Inventory fundamentals session:** Newsvendor → Warehouse Consolidation → Batch Size.
+- **Working-with-partners session:** Beer Game → Contract Game (information, then incentives).
 - **Lunch-and-learn:** any single game with its debrief (~30 min).
 
 ## References
@@ -111,3 +154,7 @@ Collect predictions before starting — write a few on a whiteboard.
 - Schweitzer, M. & Cachon, G. (2000). Decision bias in the newsvendor problem. *Management Science 46*(3).
 - Eppen, G. (1979). Effects of centralization on expected costs in a multi-location newsboy problem. *Management Science 25*(5).
 - Goldratt, E. (1984). *The Goal.*
+- Spengler, J. (1950). Vertical integration and antitrust policy. *Journal of Political Economy 58*(4).
+- Pasternack, B. (1985). Optimal pricing and return policies for perishable commodities. *Marketing Science 4*(2).
+- Cachon, G. & Lariviere, M. (2005). Supply chain coordination with revenue-sharing contracts. *Management Science 51*(1).
+- Harris, F. (1913). How many parts to make at once. *Factory, The Magazine of Management 10*(2).

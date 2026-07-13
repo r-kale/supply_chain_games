@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comparison Board — rank your teams</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="home" href="index.html">📦 Supply Chain Games</a>
+    <span class="crumb">/ Comparison Board</span>
+  </header>
+
+  <h1>🏆 Comparison Board</h1>
+  <p class="lede">
+    Running a tournament? At the end of each game, every team's debrief has a
+    <b>Copy result code</b> button. Collect the codes (chat, sticky note, shouted across
+    the room — they're just text) and paste them below, one per line. Leaderboards appear
+    instantly. Nothing is uploaded anywhere — the code <em>is</em> the data.
+  </p>
+
+  <div class="card">
+    <h3 style="margin-top:0">Paste result codes</h3>
+    <textarea id="codes" rows="6" spellcheck="false"
+      placeholder="SCG1-eyJ0IjoiQ2hhaW4gR2FuZyIs..."
+      style="width:100%;font:13px ui-monospace,Menlo,monospace;background:var(--surface-1);
+             color:var(--text-primary);border:1px solid var(--baseline);border-radius:8px;
+             padding:10px;resize:vertical"></textarea>
+    <div class="actions">
+      <button class="primary" id="btn-build">Build leaderboards</button>
+      <span class="muted" id="parse-note"></span>
+    </div>
+  </div>
+
+  <div id="boards"></div>
+
+  <footer class="site">Result codes are self-contained — this page works offline and stores nothing.</footer>
+</div>
+<script src="js/charts.js"></script>
+<script src="js/results.js"></script>
+<script src="js/compare.js"></script>
+</body>
+</html>

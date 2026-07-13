@@ -352,6 +352,14 @@
     }
     $("debrief-table").innerHTML = head + body + "</tbody>";
 
+    Results.emit($("result-widget"), () => ({
+      g: "beer",
+      cost: Math.round(totalCost),
+      amp: Math.round(ampTop * 10) / 10,
+      weeks: G.weeks,
+      humans: ROLES.filter((_, i) => G.humans[i]).join("+") || "none"
+    }));
+
     show("debrief");
   }
 

@@ -160,6 +160,9 @@
     const base = batchAverage(d6, START_WIP, 200);
     variantRows.push({ name: "Standard line — average of 200 runs", out: base.avgOut, wip: base.avgWip });
     renderVariants();
+    Results.emit($("result-widget"), () => ({
+      g: "dice", out: line.out, pred: prediction
+    }));
     show("results");
     window.scrollTo(0, 0);
   }

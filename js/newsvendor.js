@@ -195,6 +195,9 @@
         <div class="delta">did your orders drift toward it?</div></div>`;
     profitCurve($("chart-curve1"), 0, $("curve1-note"));
     profitCurve($("chart-curve2"), 1, $("curve2-note"));
+    Results.emit($("result-widget"), () => ({
+      g: "news", profit: Math.round(grand), hi: avg(0), lo: avg(1)
+    }));
     show("debrief");
     window.scrollTo(0, 0);
   }

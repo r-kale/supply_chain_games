@@ -15,6 +15,12 @@ the folder anywhere (GitHub Pages, an intranet share, a laptop at a workshop).
 | 📰 [The Newsvendor Game](newsvendor.html) | Demand uncertainty, service levels, critical ratio | 1 | 10–15 min |
 | 🏭 [Warehouse Consolidation](risk-pooling.html) | Risk pooling, the √n law | 1 | 10–15 min |
 | 🎲 [The Dice Game](dice-game.html) | Variability + dependent events (*The Goal*) | 1 | 10 min |
+| 🤝 [The Contract Game](contract-game.html) | Double marginalization, coordinating contracts | 1 | 10–15 min |
+| ⚖️ [The Batch Size Game](batch-game.html) | EOQ, ordering vs. holding costs | 1 | 5–10 min |
+
+Plus a 🏆 [Comparison Board](compare.html) for tournaments: every debrief issues a copyable
+**result code**; the facilitator pastes the codes into the board for instant leaderboards.
+No server, no accounts — the code is the data.
 
 ### 🍺 The Beer Game
 Four tiers — retailer, wholesaler, distributor, factory — each seeing only its own
@@ -41,6 +47,18 @@ A balanced five-station line where each station's per-round capacity is a die ro
 Players predict output, watch throughput fall short of the 3.5/round average, then test
 countermeasures (variability reduction, buffers, extra capacity) over 200 simulated runs.
 
+### 🤝 The Contract Game
+The player is a manufacturer setting wholesale (and optionally buyback) terms for a
+rational newsvendor retailer over 8 seasons. Squeezing the wholesale price shrinks the
+retailer's order — double marginalization (Spengler, 1950). Buyback terms on the
+coordination line restore the chain-optimal order (Pasternack, 1985), echoing
+Blockbuster-style revenue sharing.
+
+### ⚖️ The Batch Size Game
+Find the order quantity that balances a $400 fixed ordering cost against $0.30/unit/week
+holding cost. Debrief covers the EOQ formula (Harris, 1913), the flatness of the cost
+curve, and why lean attacks the fixed cost (SMED) rather than tuning the batch.
+
 ## Running a workshop
 
 See [FACILITATOR_GUIDE.md](FACILITATOR_GUIDE.md) for timings, discussion questions, and
@@ -54,6 +72,10 @@ beer-game.html        + js/beer-game.js      bullwhip / Beer Game
 newsvendor.html       + js/newsvendor.js     newsvendor problem
 risk-pooling.html     + js/risk-pooling.js   risk pooling challenge
 dice-game.html        + js/dice-game.js      variability / The Goal dice game
+contract-game.html    + js/contract-game.js  double marginalization / buyback contracts
+batch-game.html       + js/batch-game.js     EOQ / batch sizing
+compare.html          + js/compare.js        facilitator leaderboards from result codes
+js/results.js         result-code encode/decode + share widget
 js/charts.js          tiny SVG chart library (lines, bars, tooltips, dark mode)
 css/style.css         shared design system (light + dark)
 ```

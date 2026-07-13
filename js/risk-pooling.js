@@ -166,6 +166,9 @@
     });
 
     drawExplore();
+    Results.emit($("result-widget"), () => ({
+      g: "pool", total: regTotal + cenTotal, reg: regTotal, cen: cenTotal, saved: savedPct
+    }));
     show("debrief");
     window.scrollTo(0, 0);
   }
