@@ -23,10 +23,15 @@ General tips:
 
 **Setup options**
 
-- *Hot-seat (best for one team of 2–4):* one machine, players pass it each week. Hand-off
-  screens keep each player's numbers private. 36 weeks takes ~25 minutes.
-- *Tournament (larger groups):* split into teams of 1–4, one machine each, same settings
-  (Classic demand, human-like bots). Lowest total chain cost wins. Bots fill empty roles.
+- *Online multiplayer (best when everyone has a device):* open
+  [beer-online.html](beer-online.html), host a room, share the 5-letter code (phones work).
+  Uncheck "I'll play a role too" to facilitate: you get a live board showing who has
+  ordered each week and the chain cost so far. Guests who drop are replaced by bots.
+- *Hot-seat (one shared machine):* players pass it each week; hand-off screens keep each
+  player's numbers private. 36 weeks takes ~25 minutes.
+- *Tournament (larger groups):* split into teams of 1–4, one room or machine each, same
+  settings (Classic demand, human-like bots). Lowest total chain cost wins — collect
+  result codes into the Comparison Board.
 - Keep **Classic** demand selected and don't reveal what it is — the flat-then-step
   pattern is the punchline.
 

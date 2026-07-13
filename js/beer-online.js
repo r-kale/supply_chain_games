@@ -1,0 +1,423 @@
+/* ============================================================
+   beer-online.js — serverless multiplayer Beer Game.
+
+   Topology: star. The HOST's browser runs the simulation
+   (BeerEngine) and is the single source of truth. Guests
+   connect over WebRTC data channels (PeerJS); the free public
+   PeerJS broker only introduces peers — game data never touches
+   a server.
+
+   Protocol (JSON messages):
+     guest → host : hello {name} · order {qty}
+     host  → guest: lobby {players[]} · reject {reason} ·
+                    week {week, weeks, role, tier} ·
+                    status {ordered[], waiting[]} ·
+                    notice {text} · debrief {payload}
+   ============================================================ */
+
+(() => {
+  const E = BeerEngine;
+  const { ROLES, ICONS } = E;
+  const $ = id => document.getElementById(id);
+
+  // Optional self-hosted signaling server: beer-online.html?srv=host:port
+  function peerOptions() {
+    const srv = new URLSearchParams(location.search).get("srv");
+    if (!srv) return {}; // PeerJS free public broker
+    const [host, port] = srv.split(":");
+    return { host, port: +port || 443, path: "/", key: "peerjs", secure: srv.startsWith("localhost") || srv.startsWith("127.") ? false : true };
+  }
+
+  const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I
+  const makeCode = () => Array.from({ length: 5 }, () => CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)]).join("");
+  const peerId = code => "scg-beer-" + code.toLowerCase();
+
+  // what a guest needs to render its own dashboard — nothing about other tiers
+  const tierView = t => ({
+    inv: t.inv, backlog: t.backlog, arrived: t.arrived, demand: t.demand,
+    onOrder: t.onOrder, cost: t.cost, hist: t.hist
+  });
+
+  const sections = ["home", "host-setup", "join-setup", "lobby", "play", "facilitate", "debrief", "error"];
+  const show = id => { sections.forEach(s => $(s).classList.toggle("hidden", s !== id)); window.scrollTo(0, 0); };
+  const fail = text => { $("error-text").textContent = text; show("error"); };
+
+  /* ================================================================
+     HOST
+     ================================================================ */
+
+  const Host = {
+    peer: null, code: null,
+    cfg: null,                 // {weeks, pattern, botKind, hostPlays, name}
+    guests: [],                // [{conn, name}] in join order
+    started: false,
+    roles: null,               // [{type:'host'|'guest'|'bot', name, conn?}] x4
+    sim: null, orders: null,
+    myRole: -1,
+
+    create() {
+      const name = $("host-name").value.trim() || "Host";
+      this.cfg = {
+        weeks: +$("cfg-weeks").value,
+        pattern: $("cfg-demand").value,
+        botKind: $("cfg-bots").value,
+        hostPlays: $("cfg-host-plays").checked,
+        name
+      };
+      $("create-status").textContent = "Contacting the matchmaking broker…";
+      $("btn-create").disabled = true;
+      this.tryOpen(0);
+    },
+
+    tryOpen(attempt) {
+      if (attempt > 2) { $("btn-create").disabled = false; return fail("Couldn't reach the matchmaking broker. Check your connection (or a firewall may be blocking it) and try again."); }
+      this.code = makeCode();
+      const peer = new Peer(peerId(this.code), peerOptions());
+      this.peer = peer;
+      peer.on("open", () => {
+        peer.off("error");
+        peer.on("error", e => { if (this.started) console.warn(e); });
+        this.enterLobby();
+      });
+      peer.on("error", e => {
+        peer.destroy();
+        if (e.type === "unavailable-id") this.tryOpen(attempt + 1); // code collision — rare
+        else { $("btn-create").disabled = false; fail("Broker error: " + e.type + ". Try again in a moment."); }
+      });
+      peer.on("connection", conn => this.onConnection(conn));
+    },
+
+    enterLobby() {
+      $("lobby-code").textContent = this.code;
+      const link = location.origin + location.pathname + "?join=" + this.code;
+      $("lobby-link").innerHTML = `or send them this link: <b>${link}</b>`;
+      $("btn-start").classList.remove("hidden");
+      $("lobby-note").textContent = "Up to 4 players including you; bots fill any empty roles. Roles are assigned in join order: Retailer → Wholesaler → Distributor → Factory.";
+      this.renderLobby();
+      show("lobby");
+    },
+
+    humanCount() { return this.guests.length + (this.cfg.hostPlays ? 1 : 0); },
+
+    onConnection(conn) {
+      conn.on("data", msg => {
+        conn._seen = Date.now(); // any message counts as a heartbeat
+        if (msg && msg.type === "hello") {
+          if (this.started) { conn.send({ type: "reject", reason: "The game has already started." }); setTimeout(() => conn.close(), 300); return; }
+          if (this.humanCount() >= 4) { conn.send({ type: "reject", reason: "The room is full (4 players)." }); setTimeout(() => conn.close(), 300); return; }
+          conn._name = (msg.name || "Player").slice(0, 20);
+          this.guests.push({ conn, name: conn._name });
+          this.broadcastLobby();
+        } else if (msg && msg.type === "order") {
+          const r = this.roles ? this.roles.findIndex(x => x.type === "guest" && x.conn === conn) : -1;
+          if (r >= 0 && this.orders[r] == null) this.submitOrder(r, msg.qty);
+        }
+      });
+      conn.on("close", () => this.onLeave(conn));
+      conn.on("error", () => this.onLeave(conn));
+    },
+
+    onLeave(conn) {
+      const gi = this.guests.findIndex(g => g.conn === conn);
+      if (!this.started) {
+        if (gi >= 0) { this.guests.splice(gi, 1); this.broadcastLobby(); }
+        return;
+      }
+      const r = this.roles.findIndex(x => x.type === "guest" && x.conn === conn);
+      if (r >= 0) {
+        this.roles[r] = { type: "bot", name: this.roles[r].name + " (bot)" };
+        this.broadcast({ type: "notice", text: `${ICONS[r]} ${ROLES[r]} lost connection — a bot is taking over.` });
+        this.broadcastStatus();
+        this.maybeResolve(); // the drop may have been the last order the week was waiting on
+      }
+    },
+
+    broadcast(msg) {
+      this.roles.forEach(r => { if (r.type === "guest") r.conn.send(msg); });
+    },
+
+    lobbyPlayers() {
+      const p = [];
+      if (this.cfg.hostPlays) p.push({ name: this.cfg.name + " (host)" });
+      else p.push({ name: this.cfg.name + " (facilitator)", fac: true });
+      this.guests.forEach(g => p.push({ name: g.name }));
+      return p;
+    },
+
+    broadcastLobby() {
+      this.renderLobby();
+      const players = this.lobbyPlayers();
+      this.guests.forEach(g => g.conn.send({ type: "lobby", players }));
+    },
+
+    renderLobby() {
+      const players = this.lobbyPlayers();
+      renderLobbyTable(players, this.cfg.hostPlays);
+      $("btn-start").textContent = `Start with ${this.humanCount()} human${this.humanCount() === 1 ? "" : "s"} + ${4 - this.humanCount()} bot${4 - this.humanCount() === 1 ? "" : "s"}`;
+    },
+
+    start() {
+      this.started = true;
+      // heartbeat: browsers don't reliably signal an abrupt peer death (closed
+      // laptop, dead wifi), so ping guests and drop anyone silent for 12s
+      this.hb = setInterval(() => {
+        const now = Date.now();
+        this.roles.forEach(r => {
+          if (r.type !== "guest") return;
+          try { r.conn.send({ type: "ping" }); } catch { /* drop detected below */ }
+          if (now - (r.conn._seen || now) > 12000) this.onLeave(r.conn);
+        });
+      }, 4000);
+      // assign roles in join order (host first if playing)
+      this.roles = [];
+      const humans = [];
+      if (this.cfg.hostPlays) humans.push({ type: "host", name: this.cfg.name });
+      this.guests.forEach(g => humans.push({ type: "guest", name: g.name, conn: g.conn }));
+      for (let i = 0; i < 4; i++) this.roles.push(humans[i] || { type: "bot", name: "Bot" });
+      this.myRole = this.cfg.hostPlays ? 0 : -1;
+
+      const seed = (Math.random() * 2 ** 31) | 0;
+      this.sim = E.newSim(E.buildDemand(this.cfg.pattern, this.cfg.weeks, seed));
+      this.beginWeek();
+    },
+
+    beginWeek() {
+      E.startWeek(this.sim);
+      this.orders = [null, null, null, null];
+      this.roles.forEach((r, i) => {
+        if (r.type === "guest") r.conn.send({ type: "week", week: this.sim.week, weeks: this.cfg.weeks, role: i, tier: tierView(this.sim.tiers[i]) });
+      });
+      if (this.myRole >= 0) renderPlayScreen(this.myRole, this.sim.week, this.cfg.weeks, this.sim.tiers[this.myRole]);
+      else this.renderFacilitator();
+      this.broadcastStatus();
+      this.maybeResolve(); // every seat may be a bot (all humans dropped)
+    },
+
+    submitOrder(role, qty) {
+      this.orders[role] = Math.max(0, Math.round(+qty) || 0);
+      this.broadcastStatus();
+      this.maybeResolve();
+    },
+
+    maybeResolve() {
+      const pending = this.roles.some((r, i) => r.type !== "bot" && this.orders[i] == null);
+      if (!pending) this.resolveWeek();
+    },
+
+    resolveWeek() {
+      this.sim.tiers.forEach((t, i) => {
+        if (this.roles[i].type === "bot") this.orders[i] = E.botOrder(this.cfg.botKind, t, i);
+        else t.lhat = 0.36 * t.demand + 0.64 * t.lhat; // keep forecast state consistent
+      });
+      E.endWeek(this.sim, this.orders);
+      if (this.sim.week > this.cfg.weeks) this.finish();
+      else this.beginWeek();
+    },
+
+    orderStatus() {
+      const ordered = [], waiting = [];
+      this.roles.forEach((r, i) => {
+        if (r.type === "bot") return;
+        (this.orders[i] != null ? ordered : waiting).push(`${ICONS[i]} ${r.name}`);
+      });
+      return { ordered, waiting };
+    },
+
+    broadcastStatus() {
+      const s = this.orderStatus();
+      this.roles.forEach(r => { if (r.type === "guest") r.conn.send({ type: "status", ...s }); });
+      if (this.myRole >= 0) renderWaitNote(s, this.orders[this.myRole] != null);
+      else this.renderFacilitator();
+    },
+
+    renderFacilitator() {
+      $("fac-week").textContent = `Week ${Math.min(this.sim.week, this.cfg.weeks)} of ${this.cfg.weeks}`;
+      const chainCost = this.sim.tiers.reduce((s, t) => s + t.cost, 0);
+      $("fac-tiles").innerHTML = `
+        <div class="tile"><div class="label">Room code</div><div class="value small" style="font-family:ui-monospace,Menlo,monospace">${this.code}</div></div>
+        <div class="tile"><div class="label">Chain cost so far</div><div class="value small">${E.money(chainCost)}</div></div>`;
+      let h = "<thead><tr><th style='text-align:left'>Role</th><th style='text-align:left'>Player</th><th style='text-align:left'>This week</th></tr></thead><tbody>";
+      this.roles.forEach((r, i) => {
+        h += `<tr><td style="text-align:left">${ICONS[i]} ${ROLES[i]}</td><td style="text-align:left">${r.name}</td>
+          <td style="text-align:left">${r.type === "bot" ? "🤖 bot" : this.orders[i] != null ? "✅ ordered" : "⏳ deciding…"}</td></tr>`;
+      });
+      $("fac-table").innerHTML = h + "</tbody>";
+      show("facilitate");
+    },
+
+    finish() {
+      clearInterval(this.hb);
+      const labels = {};
+      this.roles.forEach((r, i) => { if (r.type !== "bot") labels[i] = r.name; });
+      const payload = {
+        demand: this.sim.demand,
+        tiers: this.sim.tiers.map(t => ({ hist: t.hist, cost: t.cost })),
+        weeks: this.cfg.weeks, pattern: this.cfg.pattern, humanLabels: labels
+      };
+      this.roles.forEach(r => { if (r.type === "guest") r.conn.send({ type: "debrief", payload }); });
+      E.renderDebrief(payload);
+      show("debrief");
+    }
+  };
+
+  /* ================================================================
+     GUEST
+     ================================================================ */
+
+  const Guest = {
+    peer: null, conn: null, name: "", role: -1, weeks: 0,
+    ordered: false, gotWeek: false,
+
+    join() {
+      const code = $("join-code").value.trim().toUpperCase();
+      this.name = $("join-name").value.trim() || "Player";
+      if (code.length !== 5) { $("join-status").textContent = "Room codes are 5 characters."; return; }
+      $("join-status").textContent = "Connecting…";
+      $("btn-join").disabled = true;
+
+      const peer = new Peer(peerOptions());
+      this.peer = peer;
+      peer.on("error", e => {
+        $("btn-join").disabled = false;
+        if (e.type === "peer-unavailable") $("join-status").textContent = "No room with that code — check it with your host.";
+        else fail("Connection error: " + e.type + ". A firewall may be blocking browser-to-browser connections — try another network.");
+      });
+      peer.on("open", () => {
+        const conn = peer.connect(peerId(code), { reliable: true });
+        this.conn = conn;
+        conn.on("open", () => conn.send({ type: "hello", name: this.name }));
+        conn.on("data", msg => this.onMessage(msg));
+        conn.on("close", () => { if (!$("debrief").classList.contains("hidden")) return; fail("Lost the connection to the host."); });
+      });
+    },
+
+    onMessage(msg) {
+      this.lastSeen = Date.now();
+      if (!this.watch) {
+        // if the host goes silent (closed tab, dead wifi), tell the player
+        this.watch = setInterval(() => {
+          if (!$("debrief").classList.contains("hidden")) { clearInterval(this.watch); return; }
+          if (Date.now() - this.lastSeen > 15000) { clearInterval(this.watch); fail("Lost the connection to the host."); }
+        }, 5000);
+      }
+      switch (msg.type) {
+        case "ping":
+          this.conn.send({ type: "pong" });
+          break;
+        case "lobby":
+          $("lobby-code").textContent = $("join-code").value.trim().toUpperCase();
+          $("lobby-link").textContent = "You're in — waiting for the host to start.";
+          $("btn-start").classList.add("hidden");
+          $("lobby-note").textContent = "Roles are assigned when the host starts the game.";
+          renderLobbyTable(msg.players, true);
+          show("lobby");
+          break;
+        case "reject":
+          fail(msg.reason);
+          break;
+        case "week":
+          this.role = msg.role; this.weeks = msg.weeks;
+          this.ordered = false; this.gotWeek = true;
+          renderPlayScreen(msg.role, msg.week, msg.weeks, msg.tier);
+          break;
+        case "status":
+          renderWaitNote(msg, this.ordered);
+          break;
+        case "notice":
+          $("wait-note").textContent = msg.text;
+          break;
+        case "debrief":
+          E.renderDebrief(msg.payload);
+          show("debrief");
+          break;
+      }
+    },
+
+    sendOrder(qty) {
+      this.ordered = true;
+      this.conn.send({ type: "order", qty });
+      $("btn-order").disabled = true;
+      $("order-input").disabled = true;
+    }
+  };
+
+  /* ================================================================
+     shared rendering
+     ================================================================ */
+
+  function renderLobbyTable(players, _hostPlays) {
+    let h = "<thead><tr><th style='text-align:left'>#</th><th style='text-align:left'>Player</th><th style='text-align:left'>Role</th></tr></thead><tbody>";
+    let roleIdx = 0;
+    players.forEach((p, i) => {
+      const role = p.fac ? "Facilitator" : roleIdx < 4 ? `${ICONS[roleIdx]} ${ROLES[roleIdx]}` : "Spectator";
+      if (!p.fac) roleIdx++;
+      h += `<tr><td style="text-align:left">${i + 1}</td><td style="text-align:left"><b>${(p.name || "").replace(/</g, "&lt;")}</b></td><td style="text-align:left">${role}</td></tr>`;
+    });
+    for (; roleIdx < 4; roleIdx++) {
+      h += `<tr><td style="text-align:left">–</td><td style="text-align:left" class="muted">🤖 Bot</td><td style="text-align:left">${ICONS[roleIdx]} ${ROLES[roleIdx]}</td></tr>`;
+    }
+    $("lobby-table").innerHTML = h + "</tbody>";
+  }
+
+  function renderPlayScreen(role, week, weeks, tier) {
+    $("play-title").textContent = `${ICONS[role]} ${ROLES[role]}`;
+    $("play-week").textContent = `Week ${week} of ${weeks}`;
+    BeerUI.renderStation($("pipeline"), role, tier);
+    BeerUI.renderTiles($("play-tiles"), role, tier);
+    $("order-hint").textContent =
+      `Ordered but not yet received: ${tier.onOrder} cases (arrives over the next ~3 weeks).`;
+    $("order-input").value = tier.hist.order.length ? tier.hist.order[tier.hist.order.length - 1] : 4;
+    $("order-input").disabled = false;
+    $("btn-order").disabled = false;
+    $("wait-note").textContent = "";
+    BeerUI.renderHistory($("history-table"), tier);
+    show("play");
+    $("order-input").focus();
+    $("order-input").select();
+  }
+
+  function renderWaitNote(status, iOrdered) {
+    if (!iOrdered) {
+      $("wait-note").textContent = status.ordered.length ? `Already ordered: ${status.ordered.join(", ")}` : "";
+      return;
+    }
+    $("wait-note").textContent = status.waiting.length
+      ? `✅ Order placed. Waiting for: ${status.waiting.join(", ")}…`
+      : "✅ Order placed. Resolving the week…";
+  }
+
+  function placeOrder() {
+    const v = Math.max(0, Math.round(+$("order-input").value));
+    if (!isFinite(v)) return;
+    // disable BEFORE submitting: the host's submit can synchronously start
+    // the next week, which re-enables the inputs for the new decision
+    $("btn-order").disabled = true;
+    $("order-input").disabled = true;
+    if (Host.started) Host.submitOrder(Host.myRole, v);
+    else Guest.sendOrder(v);
+  }
+
+  /* ================================================================
+     wire up
+     ================================================================ */
+
+  $("btn-go-host").addEventListener("click", () => show("host-setup"));
+  $("btn-go-join").addEventListener("click", () => show("join-setup"));
+  $("btn-create").addEventListener("click", () => Host.create());
+  $("btn-start").addEventListener("click", () => Host.start());
+  $("btn-join").addEventListener("click", () => Guest.join());
+  $("join-code").addEventListener("keydown", e => { if (e.key === "Enter") Guest.join(); });
+  $("btn-order").addEventListener("click", placeOrder);
+  $("order-input").addEventListener("keydown", e => { if (e.key === "Enter" && !$("btn-order").disabled) placeOrder(); });
+
+  // ?join=CODE deep link
+  const deepJoin = new URLSearchParams(location.search).get("join");
+  if (deepJoin) {
+    $("join-code").value = deepJoin.toUpperCase();
+    show("join-setup");
+    $("join-name").focus();
+  }
+
+  // host: place-order path when the host also plays
+  // (Host.submitOrder is called directly from placeOrder above)
+})();

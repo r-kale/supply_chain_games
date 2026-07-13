@@ -11,7 +11,7 @@ the folder anywhere (GitHub Pages, an intranet share, a laptop at a workshop).
 
 | Game | Concept | Players | Time |
 |---|---|---|---|
-| 🍺 [The Beer Game](beer-game.html) | Bullwhip effect | 1–4 (hot-seat) or solo vs. bots | 20–40 min |
+| 🍺 [The Beer Game](beer-game.html) | Bullwhip effect | 1–4: solo vs. bots, hot-seat, or [online multiplayer](beer-online.html) | 20–40 min |
 | 📰 [The Newsvendor Game](newsvendor.html) | Demand uncertainty, service levels, critical ratio | 1 | 10–15 min |
 | 🏭 [Warehouse Consolidation](risk-pooling.html) | Risk pooling, the √n law | 1 | 10–15 min |
 | 🎲 [The Dice Game](dice-game.html) | Variability + dependent events (*The Goal*) | 1 | 10 min |
@@ -29,6 +29,16 @@ $0.50/case/week, backlog $1.00/case/week. Bot players use either the Sterman (19
 anchoring-and-adjustment heuristic (realistic, produces bullwhip) or a disciplined
 base-stock policy (the benchmark). The debrief reveals the hidden demand pattern, order
 amplification per tier, net inventory swings, costs, and a bot benchmark on identical demand.
+
+**Online multiplayer** (`beer-online.html`): up to 4 players on their own devices
+(phones work). The host's browser runs the game and is the source of truth; players
+connect **peer-to-peer over WebRTC** (via the vendored PeerJS library), so there is no
+game server and nothing is stored anywhere. The free public PeerJS broker only performs
+the initial handshake. Guests who disconnect are seamlessly replaced by bots.
+Organizations that can't reach the public broker can self-host one
+(`npx peerjs --port 9000`) and point the page at it with `beer-online.html?srv=host:port`.
+Note: unusually strict corporate firewalls can block WebRTC entirely — a phone on mobile
+data is the workaround.
 
 ### 📰 The Newsvendor Game
 Ten days running a bakery stand under a high-margin scenario (critical ratio 0.75 →
@@ -68,7 +78,10 @@ the theory behind each debrief.
 
 ```
 index.html            landing page
-beer-game.html        + js/beer-game.js      bullwhip / Beer Game
+beer-game.html        + js/beer-game.js      bullwhip / Beer Game (solo & hot-seat)
+beer-online.html      + js/beer-online.js    Beer Game online multiplayer (WebRTC, serverless)
+js/beer-engine.js     shared Beer Game simulation, bots, and debrief renderer
+js/vendor/peerjs.min.js  vendored PeerJS 1.5.5 (MIT) — WebRTC peer connections
 newsvendor.html       + js/newsvendor.js     newsvendor problem
 risk-pooling.html     + js/risk-pooling.js   risk pooling challenge
 dice-game.html        + js/dice-game.js      variability / The Goal dice game

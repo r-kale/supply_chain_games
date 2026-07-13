@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Beer Game — bullwhip effect</title>
+<title>The Beer Game — online multiplayer</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -11,39 +11,44 @@
 <div class="wrap">
   <header class="site-header">
     <a class="home" href="index.html">📦 Supply Chain Games</a>
-    <span class="crumb">/ The Beer Game</span>
+    <span class="crumb">/ The Beer Game · online</span>
   </header>
 
-  <!-- ================= SETUP ================= -->
-  <section id="setup">
-    <h1>🍺 The Beer Game</h1>
+  <!-- ================= HOME ================= -->
+  <section id="home">
+    <h1>🍺 The Beer Game — play together, apart</h1>
     <p class="lede">
-      You run one tier of a beer supply chain: <b>Factory → Distributor → Wholesaler →
-      Retailer → Customer</b>. Each week you receive beer from upstream, ship beer
-      downstream, and place one order. That's it. Your goal: <b>minimize your total cost</b>.
+      Up to four players, each on their own device (phones work). One player hosts and gets a
+      room code; the others join with it. Your browsers connect <b>directly to each other</b> —
+      there's no game server and nothing is stored anywhere. Bots fill any empty roles.
     </p>
-
-    <div class="card">
-      <h3 style="margin-top:0">The rules</h3>
-      <ul>
-        <li>Holding inventory costs <b>$0.50 per case per week</b>. Unfilled orders (backlog)
-            cost <b>$1.00 per case per week</b> — and must be filled later.</li>
-        <li>Orders take <b>1 week</b> to reach your supplier; shipments take <b>2 weeks</b>
-            to arrive (the factory brews in 2 weeks). No cancellations, no returns.</li>
-        <li>You can only see <b>your own</b> inventory and the orders that reach you.
-            You cannot see end-customer demand or other tiers — just like real life.</li>
-      </ul>
+    <div class="game-grid">
+      <div class="card game-card" id="btn-go-host" style="cursor:pointer">
+        <span class="tag">Start here</span>
+        <h3>🎛️ Host a game</h3>
+        <p>Choose the settings, get a room code, share it with your team. Your browser runs
+           the game — keep this tab open.</p>
+      </div>
+      <div class="card game-card" id="btn-go-join" style="cursor:pointer">
+        <span class="tag">Got a code?</span>
+        <h3>🎟️ Join a game</h3>
+        <p>Enter the room code your host shared and pick your name. That's it.</p>
+      </div>
     </div>
+    <p class="muted">Prefer one shared machine? Use the <a href="beer-game.html">hot-seat version</a>.
+       Note: some strict corporate firewalls block browser-to-browser connections — if a join
+       hangs, try a phone on mobile data.</p>
+  </section>
 
-    <div class="card" style="margin-top:16px">
-      <h3 style="margin-top:0">Who plays each role?</h3>
-      <div class="field-row" id="role-pickers"></div>
-      <p class="muted">Any mix works: play solo against bots, or pass one device between up to
-         four players. With 2+ humans, the game adds hand-off screens so nobody sees another
-         player's numbers. Everyone on their own device instead? Use the
-         <a href="beer-online.html">online multiplayer version</a> — no server needed.</p>
-
+  <!-- ================= HOST SETUP ================= -->
+  <section id="host-setup" class="hidden">
+    <h1>🎛️ Host a game</h1>
+    <div class="card">
       <div class="field-row">
+        <label class="field">Your name
+          <input type="text" id="host-name" maxlength="20" placeholder="e.g. Rahul"
+                 style="font:inherit;background:var(--surface-1);color:var(--text-primary);border:1px solid var(--baseline);border-radius:8px;padding:8px 10px;width:160px">
+        </label>
         <label class="field">Weeks
           <select id="cfg-weeks">
             <option value="24">24 (quick)</option>
@@ -58,27 +63,57 @@
             <option value="random">Random</option>
           </select>
         </label>
-        <label class="field">Bot behavior
+        <label class="field">Bot behavior (for empty roles)
           <select id="cfg-bots">
             <option value="human" selected>Human-like (realistic)</option>
             <option value="smart">Disciplined (base-stock policy)</option>
           </select>
         </label>
       </div>
-
+      <label style="display:flex;align-items:center;gap:8px;margin:10px 0;font-size:15px">
+        <input type="checkbox" id="cfg-host-plays" checked> I'll play a role too (uncheck to facilitate only)
+      </label>
       <div class="actions">
-        <button class="primary big" id="btn-start">Start the game</button>
+        <button class="primary big" id="btn-create">Create room</button>
+        <span class="muted" id="create-status"></span>
       </div>
     </div>
   </section>
 
-  <!-- ================= HANDOFF ================= -->
-  <section id="handoff" class="hidden">
-    <div class="card handoff">
-      <p class="muted" id="handoff-week"></p>
-      <h2 id="handoff-title"></h2>
-      <p>Pass the device — no peeking at other players' screens.</p>
-      <button class="primary big" id="btn-handoff"></button>
+  <!-- ================= JOIN SETUP ================= -->
+  <section id="join-setup" class="hidden">
+    <h1>🎟️ Join a game</h1>
+    <div class="card">
+      <div class="field-row">
+        <label class="field">Your name
+          <input type="text" id="join-name" maxlength="20" placeholder="e.g. Priya"
+                 style="font:inherit;background:var(--surface-1);color:var(--text-primary);border:1px solid var(--baseline);border-radius:8px;padding:8px 10px;width:160px">
+        </label>
+        <label class="field">Room code
+          <input type="text" id="join-code" maxlength="5" placeholder="e.g. XK3PA"
+                 style="font:18px ui-monospace,Menlo,monospace;text-transform:uppercase;background:var(--surface-1);color:var(--text-primary);border:1px solid var(--baseline);border-radius:8px;padding:8px 10px;width:120px">
+        </label>
+        <button class="primary big" id="btn-join">Join</button>
+      </div>
+      <p class="muted" id="join-status"></p>
+    </div>
+  </section>
+
+  <!-- ================= LOBBY ================= -->
+  <section id="lobby" class="hidden">
+    <h1>Waiting room</h1>
+    <div class="card handoff" style="padding:40px 20px">
+      <p class="muted">Room code — share it with your players</p>
+      <h2 style="font:700 44px ui-monospace,Menlo,monospace;letter-spacing:6px;margin:6px 0" id="lobby-code"></h2>
+      <p class="muted" id="lobby-link"></p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Players</h3>
+      <div class="table-scroll"><table class="data" id="lobby-table"></table></div>
+      <p class="muted" id="lobby-note"></p>
+      <div class="actions">
+        <button class="primary big hidden" id="btn-start">Start the game</button>
+      </div>
     </div>
   </section>
 
@@ -90,7 +125,6 @@
     </div>
 
     <div class="pipeline" id="pipeline"></div>
-
     <div class="tiles" id="play-tiles"></div>
 
     <div class="card">
@@ -100,6 +134,7 @@
         <input type="number" class="big-input" id="order-input" min="0" step="1" value="4">
         <button class="primary big" id="btn-order">Place order</button>
       </div>
+      <p class="muted" id="wait-note"></p>
     </div>
 
     <div class="card" style="margin-top:16px">
@@ -108,11 +143,24 @@
     </div>
   </section>
 
-  <!-- ================= DEBRIEF ================= -->
+  <!-- ================= FACILITATOR ================= -->
+  <section id="facilitate" class="hidden">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+      <h1 style="margin:0">🎛️ Facilitator view</h1>
+      <span class="pill" id="fac-week"></span>
+    </div>
+    <p class="lede">Keep this tab open — your browser is running the game.</p>
+    <div class="tiles" id="fac-tiles"></div>
+    <div class="card">
+      <h3 style="margin-top:0">This week's orders</h3>
+      <div class="table-scroll"><table class="data" id="fac-table"></table></div>
+    </div>
+  </section>
+
+  <!-- ================= DEBRIEF (same ids as solo page) ================= -->
   <section id="debrief" class="hidden">
     <h1>Debrief: what just happened?</h1>
     <p class="lede" id="debrief-lede"></p>
-
     <div class="tiles" id="debrief-tiles"></div>
 
     <div class="card chart-block">
@@ -174,16 +222,26 @@
     <div class="card" id="result-widget"></div>
 
     <div class="actions">
-      <button class="primary" id="btn-again">Play again</button>
+      <a class="btn primary" href="beer-online.html">Play again</a>
       <a class="btn" href="index.html">All games</a>
     </div>
   </section>
 
-  <footer class="site">Inspired by the MIT Beer Distribution Game (Forrester 1961; Sterman 1989).</footer>
+  <!-- ================= ERROR ================= -->
+  <section id="error" class="hidden">
+    <div class="card handoff">
+      <h2>⚠️ Connection problem</h2>
+      <p id="error-text"></p>
+      <a class="btn primary" href="beer-online.html">Back to start</a>
+    </div>
+  </section>
+
+  <footer class="site">Peer-to-peer via WebRTC — no game server, nothing stored. Inspired by the MIT Beer Distribution Game.</footer>
 </div>
+<script src="js/vendor/peerjs.min.js"></script>
 <script src="js/charts.js"></script>
 <script src="js/results.js"></script>
 <script src="js/beer-engine.js"></script>
-<script src="js/beer-game.js"></script>
+<script src="js/beer-online.js"></script>
 </body>
 </html>
