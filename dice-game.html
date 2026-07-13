@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Dice Game — variability and flow</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="home" href="index.html">📦 Supply Chain Games</a>
+    <span class="crumb">/ The Dice Game</span>
+  </header>
+
+  <!-- ================= INTRO ================= -->
+  <section id="intro">
+    <h1>🎲 The Dice Game</h1>
+    <p class="lede">
+      A production line with five stations. Each round, every station rolls a die —
+      that's how many units it can pass to the next station (if it has that many waiting).
+      Station 1 never runs out of raw material. Between stations, 4 units start in the buffer.
+    </p>
+    <div class="card">
+      <h3 style="margin-top:0">Think first</h3>
+      <p>Every station averages <b>3.5 units per round</b> of capacity. The line is perfectly
+         balanced — no station is slower than any other. You'll run <b>20 rounds</b>.</p>
+      <p><b>How many units do you predict the line will deliver?</b> (Naive math says 3.5 × 20 = 70.)</p>
+      <div class="actions">
+        <input type="number" class="big-input" id="predict-input" min="0" step="1" value="70">
+        <button class="primary big" id="btn-begin">Lock prediction &amp; start</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PLAY ================= -->
+  <section id="play" class="hidden">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+      <h1 style="margin:0">The line</h1>
+      <span class="pill" id="round-pill"></span>
+    </div>
+
+    <div class="pipeline" id="line"></div>
+
+    <div class="tiles" id="play-tiles"></div>
+
+    <div class="actions">
+      <button class="primary big" id="btn-roll">🎲 Roll the line</button>
+      <button class="big" id="btn-auto">Auto-run remaining rounds</button>
+    </div>
+
+    <div class="card chart-block">
+      <h3>Cumulative output vs. the naive promise</h3>
+      <p class="sub">If averages told the truth, the line would track the 3.5/round line.</p>
+      <div id="chart-cum"></div>
+    </div>
+  </section>
+
+  <!-- ================= RESULTS ================= -->
+  <section id="results" class="hidden">
+    <h1>Results</h1>
+    <div class="tiles" id="result-tiles"></div>
+
+    <div class="callout">
+      <h4>Why a "balanced" line can't hit its average</h4>
+      <p>Two forces gang up on you (Goldratt, <em>The Goal</em>):</p>
+      <ul>
+        <li><b>Statistical fluctuations</b> — every station swings between 1 and 6.</li>
+        <li><b>Dependent events</b> — a station can only process what upstream has already
+            delivered. A bad roll starves the next station; a good roll can't be "banked"
+            unless there's buffer to absorb it.</li>
+      </ul>
+      <p>The losses don't average out — <b>deficits propagate, surpluses evaporate</b>. That's why
+         real throughput lands below 3.5/round, and why work-in-process piles up in front of
+         whoever just rolled badly.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">What would help most? Try the countermeasures</h3>
+      <p class="muted">Each experiment simulates 200 twenty-round games and reports the average,
+         so luck is filtered out.</p>
+      <div class="actions">
+        <button id="btn-var-lowvar">🎯 Less variability (die shows only 3 or 4 — same 3.5 avg)</button>
+        <button id="btn-var-buffer">📦 Bigger buffers (start with 12 per station)</button>
+        <button id="btn-var-capacity">💪 More capacity (8-sided die — 4.5 avg, +29%)</button>
+      </div>
+      <div class="table-scroll"><table class="data" id="variants-table"></table></div>
+    </div>
+
+    <div class="callout" id="lesson" >
+      <h4>The lesson</h4>
+      <ul>
+        <li><b>Reducing variability</b> recovers almost all the lost throughput — for free, with
+            less inventory. This is the statistical heart of lean/Six Sigma and of steady takt times.</li>
+        <li><b>Buffers</b> (inventory, time, or capacity) also protect throughput — but you pay for
+            them in work-in-process and lead time. Use them deliberately, at the constraint
+            (Theory of Constraints: drum–buffer–rope).</li>
+        <li><b>Adding capacity</b> works but is usually the most expensive lever — and a balanced
+            line at higher capacity still loses to variability.</li>
+        <li>This is also why <b>utilization near 100% explodes lead times</b>: no slack to absorb
+            fluctuations (queueing theory says congestion ∝ variability × utilization).</li>
+      </ul>
+    </div>
+
+    <div class="card" id="result-widget"></div>
+
+    <div class="actions">
+      <button class="primary" id="btn-again">Play again</button>
+      <a class="btn" href="index.html">All games</a>
+    </div>
+  </section>
+
+  <footer class="site">The match-and-dice exercise from Goldratt's <em>The Goal</em> (1984).</footer>
+</div>
+<script src="js/charts.js"></script>
+<script src="js/results.js"></script>
+<script src="js/dice-game.js"></script>
+</body>
+</html>

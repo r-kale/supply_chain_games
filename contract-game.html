@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Contract Game — coordinating a supply chain</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="home" href="index.html">📦 Supply Chain Games</a>
+    <span class="crumb">/ The Contract Game</span>
+  </header>
+
+  <!-- ================= INTRO ================= -->
+  <section id="intro">
+    <h1>🤝 The Contract Game</h1>
+    <p class="lede">
+      You manufacture a seasonal product for <b>$3 a unit</b>. A retailer sells it for
+      <b>$12</b> to customers whose seasonal demand averages 100 (±30). Each season you offer
+      the retailer contract terms; the retailer then decides how much to order. Whatever
+      they don't sell is wasted. You'll play <b>8 seasons</b> — <b>maximize your total profit</b>.
+    </p>
+    <div class="card">
+      <h3 style="margin-top:0">How the retailer thinks</h3>
+      <ul>
+        <li>The retailer is <b>sharp</b>: given your terms, it orders exactly the quantity that
+            maximizes its own expected profit (and orders nothing if your terms would lose it money).</li>
+        <li>You choose the <b>wholesale price</b> — and optionally a <b>buyback price</b>: how much
+            you'll refund per unsold unit at season's end. Refunding leftovers sounds crazy.
+            Maybe it isn't.</li>
+        <li>Scores use expected (long-run average) profits, so there's no luck — only strategy.</li>
+      </ul>
+      <div class="actions">
+        <button class="primary big" id="btn-begin">Start season 1</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PLAY ================= -->
+  <section id="play" class="hidden">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+      <h1 style="margin:0">🤝 Offer your terms</h1>
+      <span class="pill" id="season-pill"></span>
+    </div>
+
+    <div class="tiles">
+      <div class="tile"><div class="label">Your production cost</div><div class="value">$3</div></div>
+      <div class="tile"><div class="label">Retail price</div><div class="value">$12</div></div>
+      <div class="tile"><div class="label">Seasonal demand</div><div class="value">100 ±30</div></div>
+      <div class="tile"><div class="label">Your total profit</div><div class="value small" id="cum-profit">$0</div></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">This season's contract</h3>
+      <div class="field-row">
+        <label class="field">Wholesale price ($/unit)
+          <input type="number" id="w-input" class="big-input" min="3" max="12" step="0.5" value="7.5">
+        </label>
+        <label class="field">Buyback price for leftovers ($/unit, 0 = none)
+          <input type="number" id="b-input" class="big-input" min="0" max="12" step="0.5" value="0">
+        </label>
+        <button class="primary big" id="btn-offer">Offer contract</button>
+      </div>
+      <p class="muted" id="offer-hint"></p>
+
+      <div id="season-result" class="hidden">
+        <div class="tiles" id="result-tiles"></div>
+        <p class="muted" id="pie-note"></p>
+        <div class="actions"><button class="primary" id="btn-next">Next season →</button></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Your seasons</h3>
+      <div class="table-scroll"><table class="data" id="seasons-table"></table></div>
+    </div>
+  </section>
+
+  <!-- ================= DEBRIEF ================= -->
+  <section id="debrief" class="hidden">
+    <h1>Debrief: growing the pie vs. splitting the pie</h1>
+    <p class="lede" id="debrief-lede"></p>
+
+    <div class="tiles" id="debrief-tiles"></div>
+
+    <div class="card chart-block">
+      <h3>Who earned what, season by season</h3>
+      <p class="sub">The ceiling every season was ~$786 — what a single integrated company
+         would earn. The red bars are the gap: money nobody got.</p>
+      <div id="chart-seasons"></div>
+    </div>
+
+    <div class="card chart-block">
+      <h3>Why a plain wholesale price can't capture the full pie</h3>
+      <p class="sub">Total chain profit vs. wholesale price with no buyback. Raising your price
+         makes the retailer order less — the chain shrinks as you squeeze.</p>
+      <div id="chart-dm"></div>
+    </div>
+
+    <div class="callout">
+      <h4>Double marginalization — two margins, one broken chain</h4>
+      <p>The retailer orders using <em>its</em> margin (retail − wholesale), not the chain's margin
+         (retail − production cost). With a wholesale price above your cost, the retailer's margin is
+         thinner than the chain's, so it rationally orders <b>less than the chain-optimal quantity</b>.
+         Every dollar of wholesale margin you grab shrinks the total pie you're grabbing from.</p>
+      <h4>Buyback contracts coordinate the chain</h4>
+      <p>Refunding leftovers lowers the retailer's overstock risk, so it orders more. Choose the pair
+         (wholesale w, buyback b) on the coordination line and the retailer orders exactly the
+         chain-optimal 120 units — the pie is maximized — while w slides your share up or down:</p>
+      <p class="formula">coordinate when&nbsp; (12 − w) / (12 − b) = (12 − 3) / 12 = 0.75 &nbsp;→&nbsp; b = 12 − (12 − w)/0.75</p>
+      <p>e.g. w = $9, b = $8: retailer still orders 120, and you keep most of the profit.</p>
+      <h4>Where you've seen this</h4>
+      <ul>
+        <li><b>Blockbuster &amp; the studios (1998):</b> revenue-sharing (a buyback cousin) let stores
+            stock 10× more tapes — rentals up ~75%, both sides won.</li>
+        <li><b>Publishing:</b> unsold book returns are a standing buyback contract.</li>
+        <li><b>Fashion "markdown money",</b> vendor rebates, quantity flexibility clauses — all
+            attempts to fix the same broken incentive.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="result-widget"></div>
+
+    <div class="actions">
+      <button class="primary" id="btn-again">Play again</button>
+      <a class="btn" href="index.html">All games</a>
+    </div>
+  </section>
+
+  <footer class="site">Double marginalization (Spengler, 1950) and supply chain contracts (Pasternack, 1985; Cachon &amp; Lariviere, 2005).</footer>
+</div>
+<script src="js/charts.js"></script>
+<script src="js/results.js"></script>
+<script src="js/contract-game.js"></script>
+</body>
+</html>

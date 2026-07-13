@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Beer Game — bullwhip effect</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="home" href="index.html">📦 Supply Chain Games</a>
+    <span class="crumb">/ The Beer Game</span>
+  </header>
+
+  <!-- ================= SETUP ================= -->
+  <section id="setup">
+    <h1>🍺 The Beer Game</h1>
+    <p class="lede">
+      You run one tier of a beer supply chain: <b>Factory → Distributor → Wholesaler →
+      Retailer → Customer</b>. Each week you receive beer from upstream, ship beer
+      downstream, and place one order. That's it. Your goal: <b>minimize your total cost</b>.
+    </p>
+
+    <div class="card">
+      <h3 style="margin-top:0">The rules</h3>
+      <ul>
+        <li>Holding inventory costs <b>$0.50 per case per week</b>. Unfilled orders (backlog)
+            cost <b>$1.00 per case per week</b> — and must be filled later.</li>
+        <li>Orders take <b>1 week</b> to reach your supplier; shipments take <b>2 weeks</b>
+            to arrive (the factory brews in 2 weeks). No cancellations, no returns.</li>
+        <li>You can only see <b>your own</b> inventory and the orders that reach you.
+            You cannot see end-customer demand or other tiers — just like real life.</li>
+      </ul>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3 style="margin-top:0">Who plays each role?</h3>
+      <div class="field-row" id="role-pickers"></div>
+      <p class="muted">Any mix works: play solo against bots, or pass one device between up to
+         four players. With 2+ humans, the game adds hand-off screens so nobody sees another
+         player's numbers. Everyone on their own device instead? Use the
+         <a href="beer-online.html">online multiplayer version</a> — no server needed.</p>
+
+      <div class="field-row">
+        <label class="field">Weeks
+          <select id="cfg-weeks">
+            <option value="24">24 (quick)</option>
+            <option value="36" selected>36 (recommended)</option>
+            <option value="52">52 (full)</option>
+          </select>
+        </label>
+        <label class="field">Customer demand
+          <select id="cfg-demand">
+            <option value="classic" selected>Classic (recommended — revealed at the end)</option>
+            <option value="seasonal">Seasonal</option>
+            <option value="random">Random</option>
+          </select>
+        </label>
+        <label class="field">Bot behavior
+          <select id="cfg-bots">
+            <option value="human" selected>Human-like (realistic)</option>
+            <option value="smart">Disciplined (base-stock policy)</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="primary big" id="btn-start">Start the game</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= HANDOFF ================= -->
+  <section id="handoff" class="hidden">
+    <div class="card handoff">
+      <p class="muted" id="handoff-week"></p>
+      <h2 id="handoff-title"></h2>
+      <p>Pass the device — no peeking at other players' screens.</p>
+      <button class="primary big" id="btn-handoff"></button>
+    </div>
+  </section>
+
+  <!-- ================= PLAY ================= -->
+  <section id="play" class="hidden">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+      <h1 id="play-title" style="margin:0"></h1>
+      <span class="pill" id="play-week"></span>
+    </div>
+
+    <div class="pipeline" id="pipeline"></div>
+
+    <div class="tiles" id="play-tiles"></div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Place this week's order</h3>
+      <p class="muted" id="order-hint"></p>
+      <div class="actions">
+        <input type="number" class="big-input" id="order-input" min="0" step="1" value="4">
+        <button class="primary big" id="btn-order">Place order</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3 style="margin-top:0">Your recent weeks</h3>
+      <div class="table-scroll"><table class="data" id="history-table"></table></div>
+    </div>
+  </section>
+
+  <!-- ================= DEBRIEF ================= -->
+  <section id="debrief" class="hidden">
+    <h1>Debrief: what just happened?</h1>
+    <p class="lede" id="debrief-lede"></p>
+
+    <div class="tiles" id="debrief-tiles"></div>
+
+    <div class="card chart-block">
+      <h3>Orders placed each week, by tier</h3>
+      <p class="sub">This is the bullwhip: compare the size of the swings at each tier with
+         the actual customer demand.</p>
+      <div id="chart-orders"></div>
+    </div>
+
+    <div class="card chart-block">
+      <h3>Order variability by tier (standard deviation)</h3>
+      <p class="sub">Each tier amplifies the variability of the tier below it.</p>
+      <div id="chart-amp"></div>
+    </div>
+
+    <div class="card chart-block">
+      <h3>Net inventory each week (inventory minus backlog)</h3>
+      <p class="sub">Below zero means unfilled orders piling up.</p>
+      <div id="chart-inventory"></div>
+    </div>
+
+    <div class="card chart-block">
+      <h3>Total cost by tier</h3>
+      <p class="sub" id="benchmark-note"></p>
+      <div id="chart-costs"></div>
+    </div>
+
+    <div class="callout">
+      <h4>Why did this happen? Nobody was incompetent — the <em>system</em> did it.</h4>
+      <p>The bullwhip effect is the amplification of demand variability as orders move
+         upstream. Its causes are structural and behavioral:</p>
+      <ul>
+        <li><b>Demand signal processing</b> — every tier forecasts from the orders it sees,
+            not real demand, so each tier over-reacts to the tier below's over-reaction.</li>
+        <li><b>Lead times</b> — with a 3-week delay between ordering and receiving, this
+            week's panic order arrives long after the panic is over.</li>
+        <li><b>Supply-line neglect</b> — under pressure, people forget what they've already
+            ordered and order again. It's the single best-documented behavioral cause
+            (Sterman, 1989).</li>
+        <li><b>Shortage gaming &amp; batching</b> — in real chains, rationing fears and
+            batch ordering amplify it further.</li>
+      </ul>
+      <h4>What actually fixes it</h4>
+      <ul>
+        <li><b>Share point-of-sale demand</b> across every tier (the retailer's demand data
+            would have saved everyone here).</li>
+        <li><b>Cut lead times</b> — the shorter the loop, the smaller the whip.</li>
+        <li><b>Count your supply line</b> — inventory on order is inventory; a base-stock
+            policy does this automatically. Compare the bot benchmark above.</li>
+        <li><b>Stabilize pricing and shrink batches</b> so orders track true demand.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Full game data</h3>
+      <div class="table-scroll"><table class="data" id="debrief-table"></table></div>
+    </div>
+
+    <div class="card" id="result-widget"></div>
+
+    <div class="actions">
+      <button class="primary" id="btn-again">Play again</button>
+      <a class="btn" href="index.html">All games</a>
+    </div>
+  </section>
+
+  <footer class="site">Inspired by the MIT Beer Distribution Game (Forrester 1961; Sterman 1989).</footer>
+</div>
+<script src="js/charts.js"></script>
+<script src="js/results.js"></script>
+<script src="js/beer-engine.js"></script>
+<script src="js/beer-game.js"></script>
+</body>
+</html>
