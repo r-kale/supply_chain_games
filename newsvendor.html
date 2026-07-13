@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Newsvendor Game — ordering under uncertainty</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="home" href="index.html">📦 Supply Chain Games</a>
+    <span class="crumb">/ The Newsvendor Game</span>
+  </header>
+
+  <!-- ================= INTRO ================= -->
+  <section id="intro">
+    <h1>📰 The Newsvendor Game</h1>
+    <p class="lede">
+      You run a bakery stand. Every morning you decide how many croissants to bake
+      <b>before</b> you know the day's demand. Whatever doesn't sell is thrown away at
+      closing time. You'll run the stand under two different pricing situations —
+      <b>maximize total profit across both</b>.
+    </p>
+    <div class="card">
+      <h3 style="margin-top:0">What you know</h3>
+      <ul>
+        <li>Daily demand averages <b>100 croissants</b> and varies day to day — the
+            histogram on the play screen shows how much (a standard deviation of about 30).</li>
+        <li>Demand is the same in both scenarios. Only the <b>prices change</b>.</li>
+        <li>You'll play <b>10 days</b> in each scenario.</li>
+      </ul>
+      <div class="actions">
+        <button class="primary big" id="btn-begin">Open the bakery</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PLAY ================= -->
+  <section id="play" class="hidden">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+      <h1 id="scenario-title" style="margin:0"></h1>
+      <span class="pill" id="day-pill"></span>
+    </div>
+    <p class="lede" id="scenario-desc"></p>
+
+    <div class="tiles" id="price-tiles"></div>
+
+    <div class="card">
+      <h3 style="margin-top:0">How many croissants do you bake today?</h3>
+      <div class="actions">
+        <input type="number" class="big-input" id="qty-input" min="0" step="1" value="100">
+        <button class="primary big" id="btn-bake">Bake &amp; open</button>
+      </div>
+      <div id="day-result" class="hidden">
+        <div class="tiles" id="result-tiles"></div>
+        <div class="actions">
+          <button class="primary" id="btn-next">Next day →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card chart-block">
+      <h3>What demand looks like</h3>
+      <p class="sub">Distribution of daily demand (this is real — no tricks).</p>
+      <div id="chart-dist"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Your days so far</h3>
+      <div class="table-scroll"><table class="data" id="days-table"></table></div>
+    </div>
+  </section>
+
+  <!-- ================= INTERSTITIAL ================= -->
+  <section id="between" class="hidden">
+    <div class="card handoff">
+      <h2>Scenario 1 complete ✅</h2>
+      <p id="between-summary"></p>
+      <p><b>Now prices change.</b> Same customers, same demand — but the economics are different.
+         Think about what that should do to your order.</p>
+      <button class="primary big" id="btn-scen2">Start scenario 2</button>
+    </div>
+  </section>
+
+  <!-- ================= DEBRIEF ================= -->
+  <section id="debrief" class="hidden">
+    <h1>Debrief: too much vs. too little</h1>
+    <p class="lede">The right order quantity has almost nothing to do with average demand —
+       it's set by the <b>cost of ordering too much</b> versus the <b>cost of ordering too little</b>.</p>
+
+    <div class="tiles" id="debrief-tiles"></div>
+
+    <div class="card chart-block">
+      <h3>Scenario 1 — high margin: expected profit for every possible order</h3>
+      <p class="sub" id="curve1-note"></p>
+      <div id="chart-curve1"></div>
+    </div>
+
+    <div class="card chart-block">
+      <h3>Scenario 2 — low margin: expected profit for every possible order</h3>
+      <p class="sub" id="curve2-note"></p>
+      <div id="chart-curve2"></div>
+    </div>
+
+    <div class="callout">
+      <h4>The newsvendor logic (worth memorizing)</h4>
+      <p>Every extra unit you stock is a bet. It wins <b>C<sub>u</sub></b> (the profit you'd
+         lose by understocking) and risks <b>C<sub>o</sub></b> (the cost of overstocking).
+         Stock up to the point where the odds stop being worth it:</p>
+      <p class="formula">Order Q* such that&nbsp; P(demand ≤ Q*) = C<sub>u</sub> / (C<sub>u</sub> + C<sub>o</sub>)&nbsp; ← the "critical ratio"</p>
+      <ul>
+        <li><b>High margin</b> (scenario 1): losing a sale hurts more than tossing a croissant
+            → critical ratio 0.75 → order <b>above</b> average demand (~120).</li>
+        <li><b>Low margin</b> (scenario 2): leftovers hurt more than lost sales
+            → critical ratio 0.25 → order <b>below</b> average demand (~80).</li>
+      </ul>
+      <h4>The bias to watch for: pull-to-center</h4>
+      <p>Across hundreds of lab studies, people order <b>too little in high-margin</b> settings and
+         <b>too much in low-margin</b> settings — orders get pulled toward average demand
+         (Schweitzer &amp; Cachon, 2000). Check your own averages above. In real supply chains this
+         shows up as chronic understocking of profitable items and overstocking of marginal ones.</p>
+      <h4>Where this applies</h4>
+      <p>Anything perishable or single-season: fashion, produce, holiday stock, spare capacity,
+         hotel rooms, vaccine orders. "Service level" targets in inventory systems are exactly
+         this critical ratio in disguise.</p>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="btn-again">Play again</button>
+      <a class="btn" href="index.html">All games</a>
+    </div>
+  </section>
+
+  <footer class="site">Based on the classic newsvendor problem and Schweitzer &amp; Cachon (2000).</footer>
+</div>
+<script src="js/charts.js"></script>
+<script src="js/newsvendor.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+# Facilitator Guide
+
+How to run each game as a team learning session. Every game ends with a built-in debrief
+screen generated from the session's own data — your job as facilitator is mostly to set
+up the experience, protect the surprise, and lead the discussion afterward.
+
+General tips:
+
+- **Don't pre-teach the concept.** The "aha" comes from experiencing the failure first
+  and seeing the theory second. Introduce each game only by its rules.
+- **Project the debrief.** The charts are the discussion material.
+- **Let people be wrong in public safely.** Everyone falls for these — that's the point.
+  Sterman ran the Beer Game with thousands of executives; almost all produced bullwhip.
+
+---
+
+## 🍺 The Beer Game (bullwhip effect) — 45–60 min with discussion
+
+**Setup options**
+
+- *Hot-seat (best for one team of 2–4):* one machine, players pass it each week. Hand-off
+  screens keep each player's numbers private. 36 weeks takes ~25 minutes.
+- *Tournament (larger groups):* split into teams of 1–4, one machine each, same settings
+  (Classic demand, human-like bots). Lowest total chain cost wins. Bots fill empty roles.
+- Keep **Classic** demand selected and don't reveal what it is — the flat-then-step
+  pattern is the punchline.
+
+**Watch for during play:** panic ordering when backlogs appear around week 8–12; players
+forgetting what they already ordered (supply-line neglect); blame flowing between tiers.
+
+**Debrief discussion (15–20 min)**
+
+1. Before revealing: "What do you think customer demand did?" (Most will guess wild
+   swings. It stepped once, from 4 to 8, and never moved again.)
+2. Walk the order chart tier by tier — amplification is usually 2–5× by the factory.
+3. "Who was the villain?" — nobody. The structure (delays, local information, no shared
+   demand signal) produces the behavior. This is the systems-thinking lesson.
+4. Connect to reality: 2020–21 semiconductor and toilet-paper whipsaws, retail
+   phantom-ordering during shortages, the benchmark bots' cost (information + discipline).
+5. Countermeasures: share POS data (CPFR, VMI), shorten lead times, order steadily,
+   count the supply line, avoid promotions that distort demand.
+
+**Replays:** try the same team with *Disciplined (base-stock)* bots, or everyone-human
+vs. everyone-bot, or Random demand to show bullwhip isn't caused by the step alone.
+
+---
+
+## 📰 The Newsvendor Game (demand uncertainty) — 25–35 min with discussion
+
+**Setup:** each participant plays solo (both scenarios, ~12 min). Ask them to note their
+average order in each scenario when the debrief shows it.
+
+**Debrief discussion**
+
+1. Poll the room: average order in scenario 1 (optimal ≈ 120) and scenario 2 (optimal ≈ 80).
+   Expect both averages to sit near 100 — that's **pull-to-center**, and seeing the whole
+   room share the bias is the moment that lands.
+2. Teach the critical ratio from the built-in debrief: order where
+   P(demand ≤ Q) = Cu/(Cu+Co). Emphasize that *average demand barely matters*.
+3. Applications: seasonal buys, perishables, capacity reservations, hotel/airline
+   overbooking (same math, opposite direction), safety stock service levels.
+
+---
+
+## 🏭 Warehouse Consolidation (risk pooling) — 20–30 min with discussion
+
+**Setup:** solo or pairs. Frame it as a competition: "lowest total inventory that still
+hits 95% fill in *both* phases."
+
+**Debrief discussion**
+
+1. Compare locked-in numbers around the room; theory says ~600 regional vs. ~450 central.
+2. Key insight from the stacked comparison: cycle stock doesn't pool — only safety stock
+   does, and it shrinks by √n.
+3. Use the correlation slider live: "What if all four regions boom together?" (national
+   promotions, weather, fashion trends → pooling benefit evaporates).
+4. Discuss the trade-off pooling costs: distance to customer, transport, resilience.
+   Where do e-commerce networks sit on this spectrum today?
+
+---
+
+## 🎲 The Dice Game (variability & flow) — 20–30 min with discussion
+
+**Setup:** solo or projected as a group exercise (one person rolls, the room watches).
+Collect predictions before starting — write a few on a whiteboard.
+
+**Debrief discussion**
+
+1. Predictions vs. reality: the line delivers ~60–65, not 70, despite being perfectly
+   balanced. Where did the units go? (Look at the WIP pile-up.)
+2. The two culprits: statistical fluctuations × dependent events. Deficits propagate
+   downstream; surpluses can't be banked.
+3. Run the three countermeasures and rank them: variability reduction ≈ free throughput;
+   buffers buy throughput with WIP; capacity is the expensive fix.
+4. Connect to practice: why lean cares about steady takt and small batches, why the
+   Theory of Constraints buffers only the bottleneck, why running at 100% utilization
+   destroys lead times.
+
+---
+
+## Suggested sequences
+
+- **Half-day "systems thinking in supply chains":** Beer Game → Dice Game → discussion.
+- **Inventory fundamentals session:** Newsvendor → Warehouse Consolidation.
+- **Lunch-and-learn:** any single game with its debrief (~30 min).
+
+## References
+
+- Forrester, J. (1961). *Industrial Dynamics.*
+- Sterman, J. (1989). Modeling managerial behavior. *Management Science 35*(3).
+- Schweitzer, M. & Cachon, G. (2000). Decision bias in the newsvendor problem. *Management Science 46*(3).
+- Eppen, G. (1979). Effects of centralization on expected costs in a multi-location newsboy problem. *Management Science 25*(5).
+- Goldratt, E. (1984). *The Goal.*

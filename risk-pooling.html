@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Warehouse Consolidation Challenge — risk pooling</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="home" href="index.html">📦 Supply Chain Games</a>
+    <span class="crumb">/ Warehouse Consolidation</span>
+  </header>
+
+  <section id="intro">
+    <h1>🏭 The Warehouse Consolidation Challenge</h1>
+    <p class="lede">
+      You supply four regions — North, South, East, West. Each region's weekly demand
+      averages <b>100 units</b> with a standard deviation of 30, independent of the others.
+      Your job: find the <b>least inventory</b> that still fills at least <b>95% of demand</b>.
+      First with four regional warehouses, then with one central warehouse. Unmet demand is lost.
+    </p>
+    <div class="actions">
+      <button class="primary big" id="btn-begin">Take the challenge</button>
+    </div>
+  </section>
+
+  <section id="play" class="hidden">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+      <h1 id="phase-title" style="margin:0"></h1>
+      <span class="pill" id="phase-pill">Target: ≥ 95% fill rate</span>
+    </div>
+    <p class="lede" id="phase-desc"></p>
+
+    <div class="card">
+      <h3 style="margin-top:0" id="stock-label"></h3>
+      <div class="actions">
+        <input type="number" class="big-input" id="stock-input" min="0" step="1">
+        <button class="primary big" id="btn-run">Simulate a year (52 weeks)</button>
+        <button class="big hidden" id="btn-lock"></button>
+      </div>
+      <div class="tiles hidden" id="run-tiles"></div>
+      <p class="muted" id="run-verdict"></p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Your attempts</h3>
+      <div class="table-scroll"><table class="data" id="attempts-table"></table></div>
+    </div>
+  </section>
+
+  <section id="debrief" class="hidden">
+    <h1>Debrief: the √n effect</h1>
+    <p class="lede" id="debrief-lede"></p>
+
+    <div class="tiles" id="debrief-tiles"></div>
+
+    <div class="card chart-block">
+      <h3>Inventory you needed for the same 95% service</h3>
+      <p class="sub">Same customers, same total demand — the only difference is where the stock sits.</p>
+      <div id="chart-compare"></div>
+    </div>
+
+    <div class="callout">
+      <h4>Why pooling works</h4>
+      <p>A warehouse holds two kinds of stock: <b>cycle stock</b> to cover <em>average</em> demand,
+         and <b>safety stock</b> to cover the <em>swings</em>. Averages add up no matter what — but
+         swings partially cancel when you pool them. One region's bad week is another's slow week.</p>
+      <p class="formula">σ<sub>pooled</sub> = σ·√n &nbsp;(independent demands) &nbsp;⇒&nbsp; safety stock shrinks by √n</p>
+      <p>Four warehouses → pooling cuts safety stock roughly in half (√4 = 2). Same service, same
+         customers, half the buffer.</p>
+      <h4>When pooling <em>doesn't</em> work</h4>
+      <ul>
+        <li><b>Correlated demand.</b> If all regions boom and bust together (ρ → 1), nothing cancels.
+            Try the explorer below.</li>
+        <li><b>Response time.</b> One central warehouse may be farther from customers — pooling trades
+            inventory for transport time. (Amazon started centralized, then re-decentralized for speed.)</li>
+        <li>Same math powers <b>postponement</b> (pool by delaying differentiation), <b>component
+            commonality</b>, and <b>virtual pooling</b> (share inventory data across stores).</li>
+      </ul>
+    </div>
+
+    <div class="card chart-block">
+      <h3>Explore: safety stock vs. number of locations</h3>
+      <p class="sub">Safety stock for 95% service, total across locations. Drag the correlation slider —
+         pooling's benefit lives and dies on demands being independent.</p>
+      <div class="field-row">
+        <label class="field" style="flex:1;min-width:220px">Demand correlation between regions: <span id="rho-val">0.0</span>
+          <input type="range" id="rho" min="0" max="100" value="0">
+        </label>
+      </div>
+      <div id="chart-explore"></div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="btn-again">Play again</button>
+      <a class="btn" href="index.html">All games</a>
+    </div>
+  </section>
+
+  <footer class="site">The square-root law of inventory pooling (Eppen, 1979).</footer>
+</div>
+<script src="js/charts.js"></script>
+<script src="js/risk-pooling.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supply Chain Games — learn by playing</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="home" href="index.html">📦 Supply Chain Games</a>
+  </header>
+
+  <h1>Learn supply chain concepts by playing them</h1>
+  <p class="lede">
+    Reading about the bullwhip effect is one thing — causing it yourself is another.
+    These short browser games put you inside classic supply chain dilemmas, then debrief
+    you with your own data. No installs, no accounts. Play solo or run them as team workshops.
+  </p>
+
+  <div class="game-grid">
+    <a class="card game-card" href="beer-game.html">
+      <span class="tag">Bullwhip effect</span>
+      <h3>🍺 The Beer Game</h3>
+      <p>Run one tier of a four-stage beer supply chain. Watch a tiny change in customer
+         demand turn into wild swings of over-ordering and stockouts upstream — the
+         famous bullwhip effect.</p>
+      <p class="meta">Solo vs. bots, or hot-seat with 2–4 players · 20–40 min</p>
+    </a>
+
+    <a class="card game-card" href="newsvendor.html">
+      <span class="tag">Demand uncertainty</span>
+      <h3>📰 The Newsvendor Game</h3>
+      <p>Order stock for a product that expires at the end of each day. Order too much and
+         you eat the leftovers; too little and you lose sales. Find the profit-maximizing
+         balance — and discover the bias almost everyone shares.</p>
+      <p class="meta">Solo · 10–15 min</p>
+    </a>
+
+    <a class="card game-card" href="risk-pooling.html">
+      <span class="tag">Risk pooling</span>
+      <h3>🏭 The Warehouse Consolidation Challenge</h3>
+      <p>Stock four regional warehouses, then one central warehouse serving the same
+         customers. Hit the same service level with far less inventory — and see when
+         pooling stops working.</p>
+      <p class="meta">Solo · 10–15 min</p>
+    </a>
+
+    <a class="card game-card" href="dice-game.html">
+      <span class="tag">Variability &amp; flow</span>
+      <h3>🎲 The Dice Game</h3>
+      <p>A five-station production line where every station's capacity is a die roll.
+         Average capacity says 3.5 units a round — so why does the line never deliver it?
+         The classic exercise from <em>The Goal</em>.</p>
+      <p class="meta">Solo · 10 min</p>
+    </a>
+  </div>
+
+  <h2>Running these with a team</h2>
+  <div class="card">
+    <p>Each game ends with a <b>debrief screen</b> built from the session's own data —
+       charts, costs, and the theory behind what just happened. For workshops:</p>
+    <ul>
+      <li><b>Beer Game:</b> use hot-seat mode with up to four players on one machine and a
+          projector for the debrief, or have several solo groups race on total cost. Don't reveal
+          the customer demand pattern beforehand — the reveal is the lesson.</li>
+      <li><b>Newsvendor:</b> have everyone play both scenarios individually, then compare
+          average orders. The pull-to-center bias shows up in almost every group.</li>
+      <li><b>Risk pooling &amp; Dice Game:</b> great as 15-minute openers before discussing
+          network design or lean/flow topics.</li>
+    </ul>
+    <p>A full facilitator guide with timings, discussion questions, and the theory for each
+       game is in <a href="https://github.com/r-kale/supply_chain_games/blob/main/FACILITATOR_GUIDE.md">FACILITATOR_GUIDE.md</a>.</p>
+  </div>
+
+  <h2>The concepts, in one line each</h2>
+  <div class="card">
+    <table class="data">
+      <thead><tr><th>Game</th><th style="text-align:left">Concept</th><th style="text-align:left">The one-line takeaway</th></tr></thead>
+      <tbody>
+        <tr><td>Beer Game</td><td style="text-align:left">Bullwhip effect</td><td style="text-align:left">Order variability amplifies upstream; share demand data and trust your supply line.</td></tr>
+        <tr><td>Newsvendor</td><td style="text-align:left">Service level / critical ratio</td><td style="text-align:left">The right order depends on the <em>cost of too much vs. too little</em>, not on average demand.</td></tr>
+        <tr><td>Consolidation</td><td style="text-align:left">Risk pooling</td><td style="text-align:left">Aggregating independent demands cuts safety stock roughly by √n.</td></tr>
+        <tr><td>Dice Game</td><td style="text-align:left">Variability + dependency</td><td style="text-align:left">In a connected line, you lose to variability — averages overpromise what flow delivers.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="site">
+    Self-contained static site — works offline, host it anywhere (GitHub Pages, an intranet, a laptop).
+  </footer>
+</div>
+</body>
+</html>
