@@ -4,6 +4,20 @@ Interactive browser games for teaching core supply chain concepts — inspired b
 Beer Distribution Game. Each game puts players inside a classic supply chain dilemma,
 then debriefs them with charts built from their own session data.
 
+**Now a complete course:** [course.html](course.html) sequences six structured lessons —
+learning objectives, theory with worked examples, post-game discussion questions, and
+interactive self-check quizzes — each reinforced by one of the games:
+
+1. [Flow & Variability](lesson-1-flow-variability.html) → 🎲 Dice Game
+2. [Inventory under Uncertainty](lesson-2-inventory-uncertainty.html) → 📰 Newsvendor
+3. [Risk Pooling](lesson-3-risk-pooling.html) → 🏭 Warehouse Consolidation
+4. [Batching & Cycle Stock](lesson-4-batching-eoq.html) → ⚖️ Batch Size
+5. [The Bullwhip Effect](lesson-5-bullwhip.html) → 🍺 Beer Game (capstone)
+6. [Incentives & Contracts](lesson-6-contracts.html) → 🤝 Contract Game
+
+The sequence climbs from a single process → a single decision → a network → a policy →
+multi-echelon dynamics → cross-firm incentives.
+
 **Zero dependencies. No build step. No server.** Open `index.html` in a browser, or host
 the folder anywhere (GitHub Pages, an intranet share, a laptop at a workshop).
 

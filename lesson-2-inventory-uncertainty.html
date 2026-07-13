@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 2: Inventory under Uncertainty — Supply Chain Course</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="home" href="index.html">📦 Supply Chain Games</a>
+    <span class="crumb">/ <a href="course.html">Course</a> / Lesson 2</span>
+  </header>
+
+  <p class="kicker">Lesson 2 of 6 · Inventory</p>
+  <h1>Inventory under Uncertainty</h1>
+  <p class="lede">Lesson 1 showed variability wrecking flow <em>inside</em> a process. Now point it
+     at demand. You must commit to a quantity <b>before</b> you know what customers will want —
+     the single most common decision in supply chains. There is a right answer, and it's
+     probably not the one your gut gives.</p>
+
+  <div class="objectives">
+    <h4>After this lesson you can</h4>
+    <ul>
+      <li>Frame any one-shot stocking decision as a trade-off between <b>overage</b> and <b>underage</b> costs</li>
+      <li>Compute the <b>critical ratio</b> and read the optimal quantity off the demand distribution</li>
+      <li>Explain why the optimal order is almost never average demand</li>
+      <li>Recognize <b>pull-to-center</b> bias — in others and in yourself</li>
+    </ul>
+  </div>
+
+  <div class="lesson-body">
+  <h2>1. The newsvendor problem</h2>
+  <p>A newspaper seller stocks papers at dawn; unsold copies at dusk are worthless. Fashion buys,
+     holiday inventory, fresh food, concert seats, flu vaccine orders, airline overbooking —
+     structurally identical: <b>one decision, then demand happens</b>.</p>
+  <p>Every unit you stock is a small bet with asymmetric stakes:</p>
+  <ul>
+    <li><b>C<sub>u</sub> — underage cost:</b> what one unit of unmet demand costs you (usually the
+        lost margin, sometimes also goodwill).</li>
+    <li><b>C<sub>o</sub> — overage cost:</b> what one leftover unit costs you (cost minus any
+        salvage value).</li>
+  </ul>
+
+  <h2>2. The critical ratio</h2>
+  <p>Think marginally. The Q-th unit you stock sells only if demand reaches Q. Stock it if
+     the expected win beats the expected loss: P(D ≥ Q) × C<sub>u</sub> &gt; P(D &lt; Q) × C<sub>o</sub>.
+     Keep adding units until that stops being true, and you get the newsvendor rule:</p>
+  <p class="formula">Choose Q* so that&nbsp; P(demand ≤ Q*) = C<sub>u</sub> / (C<sub>u</sub> + C<sub>o</sub>)&nbsp; — the critical ratio (CR)</p>
+  <p>The critical ratio is a <b>service level</b>: the probability you don't stock out. Notice
+     what's in the formula — two costs. And what isn't — average demand. The average only tells
+     you where the distribution sits; the <em>economics</em> tell you how far up it to stock.</p>
+  <p><b>Worked example (the game you'll play).</b> Croissants sell at $12, cost $3, leftovers are
+     tossed. Demand is roughly Normal(100, 30).</p>
+  <ul>
+    <li>C<sub>u</sub> = 12 − 3 = $9 (margin lost per turned-away customer); C<sub>o</sub> = $3 (cost of a tossed croissant)</li>
+    <li>CR = 9 / (9 + 3) = <b>0.75</b> → stock at the 75th percentile of demand</li>
+    <li>75th percentile of Normal(100, 30) ≈ 100 + 0.674 × 30 ≈ <b>120 croissants</b> — a fifth <em>above</em> average</li>
+  </ul>
+  <p>Now flip the margins: cost $9, price $12. CR = 3/12 = <b>0.25</b> → stock the 25th percentile
+     ≈ <b>80</b> — a fifth <em>below</em> average. Same customers, same demand, opposite answer.
+     <b>Margins, not means, set the order.</b></p>
+
+  <h2>3. The bias everyone brings</h2>
+  <p>Schweitzer &amp; Cachon (2000) ran exactly this experiment on hundreds of subjects — including
+     experienced managers. The result replicates everywhere: people order <b>too little when
+     margins are high</b> and <b>too much when margins are low</b>. Orders get dragged toward
+     average demand, as if the mean were a magnet. It's called <b>pull-to-center</b>, and it has
+     two roots: anchoring on the average, and the sting of visible waste (leftovers hurt more than
+     invisible lost sales).</p>
+  <p>In real assortments this shows up as a systematic pattern: <b>star products chronically
+     understocked, marginal products chronically overstocked</b> — precisely backwards from what
+     the economics say.</p>
+
+  <h2>4. Where you'll meet this again</h2>
+  <p>Every "service level" in an inventory system — "we target 95% availability" — is a critical
+     ratio wearing a suit. Choosing 95% <em>is</em> choosing a ratio of underage to overage cost
+     of 19:1, whether anyone did that math or not. Lesson 3 builds directly on this: once you know
+     the service level you want, safety stock is what it costs — and network design changes the
+     price.</p>
+  </div>
+
+  <a class="play-banner" href="newsvendor.html">
+    <p class="kicker">Now play — 10–15 minutes</p>
+    <h3>📰 The Newsvendor Game</h3>
+    <p>Play both scenarios for real — don't compute first, order by feel, and <b>don't change your
+       approach mid-scenario</b>. The debrief will plot your average against the optimum. Teaching
+       a group? Have everyone play before anyone discusses, then poll the room's average orders —
+       the shared bias is the lesson.</p>
+  </a>
+
+  <div class="callout">
+    <h4>After the game — discuss or reflect</h4>
+    <ul>
+      <li>Where did your averages land relative to 120 and 80? Toward the middle? You've met
+          pull-to-center.</li>
+      <li>Whose fault is a stockout of a high-margin item: the forecaster or the order policy?</li>
+      <li>Your company targets the same service level for every product. Given CR = economics,
+          what's wrong with that?</li>
+      <li>Which decisions in your business are secretly newsvendor problems (capacity bookings,
+          staffing levels, event stock)?</li>
+    </ul>
+  </div>
+
+  <h2>Self-check</h2>
+
+  <div class="quiz" data-answer="c">
+    <p class="q">1. A grocer buys strawberries at $4/box, sells at $10/box; unsold boxes are
+       donated (worth $0 to the grocer). The critical ratio is…</p>
+    <button class="opt" data-k="a">0.4</button>
+    <button class="opt" data-k="b">0.5</button>
+    <button class="opt" data-k="c">0.6</button>
+    <button class="opt" data-k="d">0.71</button>
+    <p class="explain hidden">C<sub>u</sub> = 10 − 4 = 6, C<sub>o</sub> = 4.
+       CR = 6/(6+4) = 0.6 → stock the 60th percentile of demand, a bit above the mean.</p>
+  </div>
+
+  <div class="quiz" data-answer="b">
+    <p class="q">2. Demand averages 200/day. The optimal order is 260. What must be true?</p>
+    <button class="opt" data-k="a">The forecast is biased low</button>
+    <button class="opt" data-k="b">Understocking costs more than overstocking (CR &gt; 0.5)</button>
+    <button class="opt" data-k="c">Demand has no variability</button>
+    <button class="opt" data-k="d">The product is perishable</button>
+    <p class="explain hidden">Ordering above the mean means the critical ratio exceeds 0.5 — losing
+       a sale hurts more than a leftover. The forecast can be perfectly correct.</p>
+  </div>
+
+  <div class="quiz" data-answer="d">
+    <p class="q">3. Pull-to-center bias predicts that a merchandiser managing both a
+       high-margin hit and a low-margin filler product will tend to…</p>
+    <button class="opt" data-k="a">overstock both</button>
+    <button class="opt" data-k="b">understock both</button>
+    <button class="opt" data-k="c">overstock the hit and understock the filler</button>
+    <button class="opt" data-k="d">understock the hit and overstock the filler</button>
+    <p class="explain hidden">Orders drift toward average demand from both directions: the
+       high-CR product gets less than optimal, the low-CR product more. The profitable item stocks
+       out while the marginal one piles up.</p>
+  </div>
+
+  <div class="keybox">
+    <h4>Key takeaways</h4>
+    <ul>
+      <li>One-shot stocking = a bet per unit: C<sub>u</sub> against C<sub>o</sub>.</li>
+      <li>Order at the critical ratio percentile: CR = C<sub>u</sub>/(C<sub>u</sub>+C<sub>o</sub>).
+          Average demand is where you start counting, not the answer.</li>
+      <li>High margin → stock above the mean; low margin → below. Every service-level target is a
+          critical ratio in disguise.</li>
+      <li>Humans pull orders toward the mean. Knowing the bias is the first defense; computing CR
+          is the second.</li>
+    </ul>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="btn" href="lesson-1-flow-variability.html">← Lesson 1: Flow &amp; Variability</a>
+    <a class="btn primary" href="lesson-3-risk-pooling.html">Lesson 3: Risk Pooling →</a>
+  </div>
+
+  <footer class="site">Further reading: Schweitzer &amp; Cachon (2000) · Cachon &amp; Terwiesch, <em>Matching Supply with Demand</em>.</footer>
+</div>
+<script src="js/quiz.js"></script>
+</body>
+</html>

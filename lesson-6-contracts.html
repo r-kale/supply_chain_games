@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 6: Incentives &amp; Contracts — Supply Chain Course</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="home" href="index.html">📦 Supply Chain Games</a>
+    <span class="crumb">/ <a href="course.html">Course</a> / Lesson 6</span>
+  </header>
+
+  <p class="kicker">Lesson 6 of 6 · Coordination</p>
+  <h1>Incentives &amp; Contracts</h1>
+  <p class="lede">Lesson 5 showed a chain failing on <b>information</b>. This lesson shows a chain
+     failing on <b>incentives</b> — even with perfect information. A supply chain is not one firm:
+     each link optimizes its own profit, and the sum of local optima is reliably worse than the
+     whole. The fix isn't trust or goodwill. It's contract design.</p>
+
+  <div class="objectives">
+    <h4>After this lesson you can</h4>
+    <ul>
+      <li>Explain <b>double marginalization</b> and why no wholesale price alone can fix it</li>
+      <li>Show how a <b>buyback</b> (or revenue-sharing) contract coordinates a chain</li>
+      <li>Separate <b>growing the pie</b> (coordination) from <b>splitting it</b> (negotiation)</li>
+      <li>Recognize coordinating contracts in the wild: returns, markdown money, VMI, revenue shares</li>
+    </ul>
+  </div>
+
+  <div class="lesson-body">
+  <h2>1. Double marginalization: two margins, one broken chain</h2>
+  <p>A manufacturer (cost c = $3) sells through a retailer (price p = $12) facing newsvendor
+     demand ~ Normal(100, 30). Put Lesson 2's critical ratio to work twice:</p>
+  <ul>
+    <li><b>If one company owned the whole chain</b>, it would stock with
+        CR = (12 − 3)/12 = 0.75 → Q ≈ 120 → expected profit ≈ <b>$786 per season</b>. That's the
+        ceiling — the biggest possible pie.</li>
+    <li><b>Split into two firms</b> with a wholesale price w = $9, the retailer's own margin is
+        only 12 − 9 = $3 against $9 at risk per leftover: CR = 3/12 = 0.25 → the retailer orders
+        ≈ <b>80</b>, not 120.</li>
+  </ul>
+  <p>The retailer is not being timid — it's optimizing correctly <em>against its own margins</em>.
+     But 40 units of profitable sales never happen, and roughly $150 of expected profit per season
+     simply evaporates. That's <b>double marginalization</b> (Spengler, 1950): two successive
+     margins each shrink the decision below the chain optimum. And here's the trap: lower w and
+     the pie grows but your slice thins; raise w and your margin fattens while the pie shrinks.
+     <b>No wholesale price gets both.</b> You'll feel this personally in the game.</p>
+
+  <h2>2. Contracts that coordinate</h2>
+  <p>The escape is to change the retailer's <em>risk</em>, not just its margin. A <b>buyback
+     contract</b> refunds b per unsold unit. Now the retailer's overage cost is w − b instead of w,
+     so its critical ratio is (p − w)/(p − b) — and you can choose the (w, b) pair to make that
+     equal the chain's 0.75:</p>
+  <p class="formula">coordinate when&nbsp; (p − w)/(p − b) = (p − c)/p &nbsp;⇒&nbsp; with p=12, c=3: &nbsp;b = 12 − (12 − w)/0.75</p>
+  <p>At w = $9, b = $8: the retailer rationally orders 120 — the full pie is baked — while the
+     manufacturer keeps most of it. Slide w up or down the coordination line and only the
+     <em>split</em> changes, never the size. Coordination and negotiation become separate
+     problems, which is precisely what makes the deal sellable to both sides: it's not zero-sum
+     anymore.</p>
+  <p><b>Revenue sharing</b> is the same medicine in a different bottle: charge a low wholesale
+     price (low risk to the retailer) in exchange for a share of revenue. Cachon &amp; Lariviere
+     proved the two are financially equivalent. Other family members: <b>quantity flexibility</b>
+     (supplier absorbs forecast error), <b>options contracts</b> (buy capacity rights now,
+     exercise later), <b>markdown money</b> (brand funds clearance discounts).</p>
+
+  <h2>3. The Blockbuster story</h2>
+  <p>1997: a VHS tape cost stores ~$65; rentals earned ~$3. That's a brutal newsvendor problem —
+     CR tiny, so stores stocked few copies, and 20% of Friday customers found the shelf empty for
+     the hit they wanted. 1998: Blockbuster and the studios switched to <b>revenue sharing</b> —
+     tapes at ~$8 up front plus ~half of each rental. Store risk collapsed, stocking exploded,
+     availability jumped, rentals rose ~75%, and <em>both</em> sides earned more. Nobody got more
+     generous; the contract changed what was individually rational.</p>
+
+  <h2>4. Beyond price: aligning the whole relationship</h2>
+  <p>Contract terms are one instrument in a bigger orchestra. <b>Vendor-managed inventory</b>
+     hands the stocking decision to whoever has the best information and incentives.
+     <b>Cost-plus transparency</b> and gain-sharing split efficiency wins. And note the closing
+     symmetry of this course: Lesson 5's chain failed because information didn't flow;
+     this one fails because incentives don't align. Real supply chain excellence — the
+     Toyotas, the Zaras — is having engineered <b>both</b>.</p>
+  </div>
+
+  <a class="play-banner" href="contract-game.html">
+    <p class="kicker">Now play — 10–15 minutes</p>
+    <h3>🤝 The Contract Game</h3>
+    <p>You're the manufacturer; a rational retailer responds to whatever terms you offer. Spend a
+       few seasons trying to win with wholesale price alone — feel the pie shrink as you squeeze.
+       Then find the buyback terms where the retailer orders 120 and you still keep most of the
+       profit. Teaching a group? Let them discover the buyback field without hints.</p>
+  </a>
+
+  <div class="callout">
+    <h4>After the game — discuss or reflect</h4>
+    <ul>
+      <li>What was your best season's chain percentage before you touched buyback? After?</li>
+      <li>"Refund leftovers" sounds like charity. Using the numbers, explain why it's greed done
+          properly.</li>
+      <li>Your procurement team is measured purely on purchase price variance. What does this
+          lesson predict they'll do to total chain profit?</li>
+      <li>Which of your supplier or customer relationships has a shrunken pie right now? What
+          risk-shifting term would grow it?</li>
+    </ul>
+  </div>
+
+  <h2>Self-check</h2>
+
+  <div class="quiz" data-answer="b">
+    <p class="q">1. Double marginalization causes the retailer to order less than the chain
+       optimum because…</p>
+    <button class="opt" data-k="a">the retailer's forecast is worse than the manufacturer's</button>
+    <button class="opt" data-k="b">the retailer decides using its own thinner margin, not the chain's full margin</button>
+    <button class="opt" data-k="c">the manufacturer's production capacity is limited</button>
+    <button class="opt" data-k="d">retailers are systematically risk-averse</button>
+    <p class="explain hidden">Perfectly rational, perfectly informed — but optimizing against
+       margin (p − w) instead of (p − c). The gap between those margins is the profit that
+       evaporates.</p>
+  </div>
+
+  <div class="quiz" data-answer="c">
+    <p class="q">2. A buyback contract coordinates the chain by…</p>
+    <button class="opt" data-k="a">guaranteeing the manufacturer a minimum order</button>
+    <button class="opt" data-k="b">punishing the retailer for stockouts</button>
+    <button class="opt" data-k="c">cutting the retailer's overage cost so its critical ratio matches the chain's</button>
+    <button class="opt" data-k="d">letting the manufacturer set the retail price</button>
+    <p class="explain hidden">The refund shrinks C<sub>o</sub> from w to w − b, raising the
+       retailer's CR to the integrated chain's level — so the privately optimal order IS the chain
+       optimal order.</p>
+  </div>
+
+  <div class="quiz" data-answer="a">
+    <p class="q">3. On the coordination line, raising the wholesale price w (with b adjusted to
+       stay on the line) changes…</p>
+    <button class="opt" data-k="a">only how the maximum pie is split — the retailer still orders the chain optimum</button>
+    <button class="opt" data-k="b">the size of the pie — higher w shrinks it</button>
+    <button class="opt" data-k="c">the retailer's order — it falls as w rises</button>
+    <button class="opt" data-k="d">nothing at all</button>
+    <p class="explain hidden">That separation is the whole point: coordination (pie size) and
+       negotiation (pie split) become independent. Bargain as hard as you like about w — the chain
+       stays whole.</p>
+  </div>
+
+  <div class="keybox">
+    <h4>Key takeaways</h4>
+    <ul>
+      <li>Independent margins shrink the pie: local optimization ≠ chain optimization, even with
+          perfect information and perfect rationality.</li>
+      <li>No wholesale price alone can coordinate. Risk-shifting terms — buybacks, revenue shares,
+          flexibility, options — can.</li>
+      <li>Grow the pie first, then negotiate the split. Coordinating contracts make the negotiation
+          non-zero-sum.</li>
+      <li>Information (L5) and incentives (L6) are the two great chain-breakers. Engineer both.</li>
+    </ul>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="btn" href="lesson-5-bullwhip.html">← Lesson 5: The Bullwhip Effect</a>
+    <a class="btn primary" href="course.html">Finish: back to the course home →</a>
+  </div>
+
+  <footer class="site">Further reading: Spengler (1950) · Pasternack (1985) · Cachon &amp; Lariviere (2005) · Mortimer (2008) on video revenue sharing.</footer>
+</div>
+<script src="js/quiz.js"></script>
+</body>
+</html>

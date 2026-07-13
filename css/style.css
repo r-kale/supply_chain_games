@@ -370,6 +370,108 @@ footer.site {
   font-size: 13px;
 }
 
+/* ---------- course & lessons ---------- */
+
+.kicker {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 6px;
+}
+
+.objectives {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 22px;
+  margin: 18px 0;
+}
+
+.objectives h4 { margin: 0 0 8px; font-size: 15px; }
+.objectives ul { margin: 0; padding-left: 20px; color: var(--text-secondary); font-size: 15px; }
+.objectives li { margin: 4px 0; }
+
+.lesson-body h2 {
+  padding-top: 10px;
+  border-top: 1px solid var(--grid);
+}
+
+.lesson-body p, .lesson-body li { color: var(--text-secondary); font-size: 16px; }
+.lesson-body b, .lesson-body strong { color: var(--text-primary); }
+
+.play-banner {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: var(--surface-1);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin: 26px 0;
+}
+
+.play-banner .kicker { margin-bottom: 2px; }
+.play-banner h3 { margin: 0 0 6px; }
+.play-banner p { margin: 0; color: var(--text-secondary); font-size: 15px; }
+.play-banner:hover { background: var(--page); }
+
+.keybox {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--status-good);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 14px 20px;
+  margin: 20px 0;
+}
+
+.keybox h4 { margin: 0 0 8px; font-size: 15px; }
+.keybox ul { margin: 0; padding-left: 20px; color: var(--text-secondary); font-size: 15px; }
+.keybox li { margin: 5px 0; }
+
+/* self-check quiz */
+.quiz {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin: 14px 0;
+}
+
+.quiz .q { font-weight: 600; color: var(--text-primary); margin: 0 0 10px; }
+.quiz button.opt {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-weight: 400;
+  margin: 6px 0;
+  padding: 10px 14px;
+}
+.quiz button.opt.right { border-color: var(--status-good); background: color-mix(in srgb, var(--status-good) 12%, var(--surface-1)); font-weight: 600; }
+.quiz button.opt.wrong { border-color: var(--status-critical); opacity: 0.6; }
+.quiz .explain {
+  margin: 10px 0 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--status-good);
+  background: var(--page);
+  border-radius: 0 8px 8px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 40px 0 0;
+  flex-wrap: wrap;
+}
+
+.lesson-nav a { max-width: 46%; }
+
+.syllabus td { vertical-align: top; }
+
 .pipeline {
   display: flex;
   gap: 10px;
