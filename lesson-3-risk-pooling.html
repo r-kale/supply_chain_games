@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 3: Risk Pooling — Supply Chain Course</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="home" href="index.html">📦 Supply Chain Games</a>
+    <span class="crumb">/ <a href="course.html">Course</a> / Lesson 3</span>
+  </header>
+
+  <p class="kicker">Lesson 3 of 6 · Network design</p>
+  <h1>Risk Pooling</h1>
+  <p class="lede">Lesson 2 priced uncertainty at a single location: safety stock. This lesson's
+     question is <b>where the stock should live</b> — because the same service costs dramatically
+     different amounts of inventory depending on how you aggregate the risk.</p>
+
+  <div class="objectives">
+    <h4>After this lesson you can</h4>
+    <ul>
+      <li>Split any stock position into <b>cycle stock</b> and <b>safety stock</b> — and know which one pools</li>
+      <li>Apply the <b>square-root law</b>: pooling n independent demands cuts safety stock by √n</li>
+      <li>Identify when pooling fails (correlation) and what it trades away (response time)</li>
+      <li>Spot the four disguises of pooling: centralization, postponement, commonality, virtual pooling</li>
+    </ul>
+  </div>
+
+  <div class="lesson-body">
+  <h2>1. Two kinds of stock</h2>
+  <p>Any warehouse's inventory splits cleanly in two:</p>
+  <ul>
+    <li><b>Cycle stock</b> covers <em>average</em> demand between replenishments. It scales with
+        the mean.</li>
+    <li><b>Safety stock</b> covers the <em>swings</em>. For a service level with safety factor z
+        (Lesson 2's critical ratio in another costume), it scales with the standard deviation:
+        SS = z·σ.</li>
+  </ul>
+  <p>This split matters because the two behave completely differently when you reorganize the
+     network. Averages add up no matter where the stock sits. <b>Swings partially cancel</b> when
+     you pool them — one region's bad week is another's slow week.</p>
+
+  <h2>2. The square-root law</h2>
+  <p>Take n locations with independent demands, each with standard deviation σ. Serve them
+     separately and total safety stock is n·z·σ. Serve them from one pool and the combined demand
+     has standard deviation σ·√n — not σ·n — so:</p>
+  <p class="formula">SS<sub>pooled</sub> = z·σ·√n &nbsp;&nbsp;vs.&nbsp;&nbsp; SS<sub>separate</sub> = z·σ·n &nbsp;&nbsp;⇒&nbsp;&nbsp; pooling saves a factor of √n</p>
+  <p><b>Worked example (the game).</b> Four regions, each Normal(100, 30) per week, 95% service
+     (z = 1.645).</p>
+  <ul>
+    <li>Four warehouses: each needs 100 + 1.645×30 ≈ 149 → total ≈ <b>597</b></li>
+    <li>One warehouse: demand is Normal(400, 60) — note σ = 30×√4 = 60, not 120 —
+        so it needs 400 + 1.645×60 ≈ <b>499</b></li>
+    <li>Same 95% service, ~16% less total inventory — and the <em>safety</em> component fell by
+        half (√4 = 2)</li>
+  </ul>
+  <p>The savings compound with scale: 16 stores pooled = 4× less safety stock. This is why
+     e-commerce, run from few large DCs, can carry enormous assortments that no individual store
+     could justify — the "long tail" is a risk-pooling artifact.</p>
+
+  <h2>3. When pooling fails, and what it costs</h2>
+  <p><b>Correlation is the kill switch.</b> The √n math assumes independence. If all regions boom
+     and bust together — national promotions, weather, fashion, recessions — the swings don't
+     cancel. At correlation ρ, pooled σ = σ·√(n + n(n−1)ρ): at ρ = 1 pooling saves exactly
+     nothing. Ask of any pooling proposal: <em>do these demands actually move independently?</em></p>
+  <p><b>Distance is the price.</b> One national DC is, on average, farther from customers than
+     regional ones — you trade inventory for transport cost and response time. That is a genuine
+     strategic choice: Amazon began fully centralized (pooling maximal), then deliberately
+     re-decentralized to buy same-day speed, paying for it with inventory. Neither answer is
+     "right"; the trade-off is the point.</p>
+
+  <h2>4. Pooling wears four disguises</h2>
+  <ul>
+    <li><b>Physical centralization</b> — fewer, bigger warehouses (this lesson's game).</li>
+    <li><b>Postponement</b> — hold generic product; differentiate at the last moment. Benetton
+        famously dyed <em>after</em> knitting, pooling color risk across the season. HP localized
+        printers in the regional DC, pooling country demand.</li>
+    <li><b>Component commonality</b> — shared parts across products pool the demand risk of every
+        product that uses them (one battery platform across car models).</li>
+    <li><b>Virtual pooling</b> — keep stock where it is but share visibility and ship from anywhere:
+        store-to-store transfers, ship-from-store, inventory-sharing agreements.</li>
+  </ul>
+  <p>Same math every time: aggregate the uncertainty, shrink the buffer.</p>
+  </div>
+
+  <a class="play-banner" href="risk-pooling.html">
+    <p class="kicker">Now play — 10–15 minutes</p>
+    <h3>🏭 The Warehouse Consolidation Challenge</h3>
+    <p>Find the leanest stock that hits 95% fill with four regional warehouses, then with one
+       central warehouse. Try to beat the theory numbers above (597 and 499). At the debrief,
+       drag the <b>correlation slider</b> and watch the pooling benefit die as ρ → 1.</p>
+  </a>
+
+  <div class="callout">
+    <h4>After the game — discuss or reflect</h4>
+    <ul>
+      <li>Compare your two locked-in totals against 597 vs. 499. Which stock component shrank —
+          cycle or safety?</li>
+      <li>Name a demand in your business that's genuinely independent across regions, and one
+          that's strongly correlated. What does that imply for each?</li>
+      <li>Your CFO wants one national DC ("16% less inventory!"). Your COO wants regional speed.
+          Frame the debate in this lesson's terms.</li>
+      <li>Which of the four disguises could your company use without moving a single warehouse?</li>
+    </ul>
+  </div>
+
+  <h2>Self-check</h2>
+
+  <div class="quiz" data-answer="b">
+    <p class="q">1. Pooling 9 independent, identical demands into one location cuts total
+       <em>safety</em> stock by…</p>
+    <button class="opt" data-k="a">a factor of 9</button>
+    <button class="opt" data-k="b">a factor of 3</button>
+    <button class="opt" data-k="c">nothing — stock just moves</button>
+    <button class="opt" data-k="d">half</button>
+    <p class="explain hidden">√9 = 3. Nine separate buffers of z·σ become one buffer of z·σ·3
+       instead of z·σ·9. Cycle stock, by contrast, doesn't change at all.</p>
+  </div>
+
+  <div class="quiz" data-answer="c">
+    <p class="q">2. Which situation gains the LEAST from consolidating regional warehouses?</p>
+    <button class="opt" data-k="a">Spare parts with independent, lumpy regional demand</button>
+    <button class="opt" data-k="b">A long-tail assortment where each store sells each item rarely</button>
+    <button class="opt" data-k="c">A product whose demand spikes nationwide with TV promotions</button>
+    <button class="opt" data-k="d">Slow-moving premium items with high holding cost</button>
+    <p class="explain hidden">Nationally synchronized spikes mean highly correlated regional
+       demands — the swings don't cancel, so pooling's benefit collapses. The others are pooling's
+       best customers.</p>
+  </div>
+
+  <div class="quiz" data-answer="a">
+    <p class="q">3. Benetton dyeing sweaters after knitting them (instead of before) is an
+       example of…</p>
+    <button class="opt" data-k="a">postponement — pooling risk across colors until demand is known</button>
+    <button class="opt" data-k="b">the bullwhip effect</button>
+    <button class="opt" data-k="c">cycle stock reduction via smaller batches</button>
+    <button class="opt" data-k="d">shortage gaming</button>
+    <p class="explain hidden">Undyed sweaters are a common component serving every color's demand —
+       the color decision is postponed until uncertainty resolves. Classic risk pooling without
+       touching the warehouse network.</p>
+  </div>
+
+  <div class="keybox">
+    <h4>Key takeaways</h4>
+    <ul>
+      <li>Cycle stock covers averages and never pools; safety stock covers swings and pools by √n.</li>
+      <li>Independence is the engine — correlation is the kill switch. Always ask how demands co-move.</li>
+      <li>Pooling trades inventory against response time; centralize vs. decentralize is a strategy
+          choice, not arithmetic.</li>
+      <li>Postponement, commonality, and virtual pooling deliver the same math without moving
+          buildings.</li>
+    </ul>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="btn" href="lesson-2-inventory-uncertainty.html">← Lesson 2: Inventory under Uncertainty</a>
+    <a class="btn primary" href="lesson-4-batching-eoq.html">Lesson 4: Batching &amp; Cycle Stock →</a>
+  </div>
+
+  <footer class="site">Further reading: Eppen (1979) · Simchi-Levi et al., <em>Designing and Managing the Supply Chain</em> · Lee &amp; Billington on HP postponement.</footer>
+</div>
+<script src="js/quiz.js"></script>
+</body>
+</html>

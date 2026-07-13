@@ -145,6 +145,18 @@ discovering it is the game.
 
 ---
 
+## Teaching a full course
+
+[course.html](course.html) packages everything into a six-lesson course with a deliberate
+sequence (flow → single decision → network → policy → chain dynamics → incentives). Each
+lesson page contains objectives, the theory with worked examples, a "now play" block,
+post-game discussion questions, and a self-check quiz. Two ways to run a session:
+
+- **Lesson-first:** teach the page, then play the game as reinforcement, then use the
+  lesson's discussion questions on the game's debrief data.
+- **Game-first (recommended for Lessons 5 & 6):** play cold, then teach the lesson as the
+  explanation of what just happened. Don't spoil the traps beforehand.
+
 ## Suggested sequences
 
 - **Half-day "systems thinking in supply chains":** Beer Game → Dice Game → discussion.

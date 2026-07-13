@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 4: Batching &amp; Cycle Stock — Supply Chain Course</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="home" href="index.html">📦 Supply Chain Games</a>
+    <span class="crumb">/ <a href="course.html">Course</a> / Lesson 4</span>
+  </header>
+
+  <p class="kicker">Lesson 4 of 6 · Inventory policy</p>
+  <h1>Batching &amp; Cycle Stock</h1>
+  <p class="lede">Lesson 3 attacked safety stock. Now the other half of the pile: <b>cycle stock</b>
+     exists because we order in batches, and we batch because every order carries a fixed cost.
+     The oldest formula in operations tells you the right batch — and a deeper reading of it
+     tells you why lean factories stopped asking that question.</p>
+
+  <div class="objectives">
+    <h4>After this lesson you can</h4>
+    <ul>
+      <li>Explain the ordering-cost vs. holding-cost trade-off and compute the <b>EOQ</b></li>
+      <li>Use the cost curve's flatness: when precision in Q matters (rarely) and when it doesn't</li>
+      <li>Explain why <b>reducing the fixed cost K</b> beats optimizing Q — the EOQ logic behind lean/SMED</li>
+      <li>Connect batching to the bullwhip effect you'll create in Lesson 5</li>
+    </ul>
+  </div>
+
+  <div class="lesson-body">
+  <h2>1. Why batch at all?</h2>
+  <p>Demand may flow one unit at a time, but supply rarely does. Each order or production run
+     carries a <b>fixed cost K</b> — freight minimums, receiving labor, paperwork, or a machine
+     changeover — that doesn't care how big the batch is. Big batches spread K thin but leave
+     stock sitting; the average inventory from ordering Q at a time is Q/2, each unit costing
+     <b>h</b> per period to hold. Hence the tension:</p>
+  <p class="formula">Cost per period(Q) = K·D/Q &nbsp;(ordering)&nbsp; + &nbsp;h·Q/2 &nbsp;(holding)</p>
+  <p>Minimizing gives Harris's 1913 <b>Economic Order Quantity</b> — the point where the two costs
+     exactly balance:</p>
+  <p class="formula">EOQ = √(2KD/h)</p>
+  <p><b>Worked example (the game).</b> D = 100/week, K = $400, h = $0.30/unit/week:
+     EOQ = √(2×400×100/0.30) ≈ <b>516 units</b>, about one order every 5 weeks, total cost
+     √(2KDh) ≈ $155/week, split exactly 50/50 between ordering and holding.</p>
+
+  <h2>2. The curve is flat — read that correctly</h2>
+  <p>The total-cost curve around the EOQ is remarkably forgiving: order 20% off the optimum and
+     costs rise ~2%; order 40% off and it's still under 6%. Two practical consequences:</p>
+  <ul>
+    <li><b>Don't chase decimal places in Q.</b> Round to pallets, truckloads, supplier case packs.
+        The model forgives you.</li>
+    <li><b>Do chase the inputs.</b> The formula is only as honest as K and h. Holding cost h is
+        chronically understated — capital, shrinkage, obsolescence, and the space that constrains
+        everything else. An honest h is usually 20–35% of item value per year, and it shrinks the
+        "optimal" batch.</li>
+  </ul>
+
+  <h2>3. The lean insight: attack K, not Q</h2>
+  <p>Look at the formula again. Q* moves with <b>√K</b>. That means the powerful lever isn't
+     choosing Q better — it's <b>making K smaller</b>: cut the fixed cost per order by 4× and the
+     optimal batch halves; inventory, lead time (Little's Law, Lesson 1), and staleness all halve
+     with it.</p>
+  <p>That is precisely what Toyota did. Faced with die changeovers measured in hours, they didn't
+     compute a better batch size — they attacked the changeover itself (SMED: single-minute
+     exchange of die), driving K toward zero until batches of one made economic sense.
+     <b>"Optimal" is a function of constraints you can change.</b> The same move works in the
+     office: e-invoicing shrinks the K of ordering; automated receiving shrinks it again; every
+     shrink justifies smaller, more frequent, smoother flows.</p>
+
+  <h2>4. Batching's dark side (a preview of Lesson 5)</h2>
+  <p>Batching doesn't just cost holding dollars — it <b>distorts the demand signal</b>. A retailer
+     selling 100/week but ordering 516 every 5 weeks shows its supplier a demand stream of
+     0, 0, 0, 0, 516. The supplier sees lumps, not the smooth truth, and plans against the lumps.
+     Multiply that up a chain of four tiers and you get the bullwhip — the monster you'll create
+     personally in the next lesson. Small batches aren't just cheap; they're <em>honest</em>.</p>
+  </div>
+
+  <a class="play-banner" href="batch-game.html">
+    <p class="kicker">Now play — 5–10 minutes</p>
+    <h3>⚖️ The Batch Size Game</h3>
+    <p>Hunt for the cost-minimizing batch in as few attempts as you can — use the "which cost
+       dominates" hint to bracket it like a binary search. Then check the debrief's cost curve:
+       notice how wide the near-optimal zone is, and where your attempts landed on it.</p>
+  </a>
+
+  <div class="callout">
+    <h4>After the game — discuss or reflect</h4>
+    <ul>
+      <li>How many attempts did you need? What search strategy would find any EOQ in 4 guesses?</li>
+      <li>The curve is flat near the bottom — so why do so many firms still fight over exact order
+          quantities while ignoring their order-processing costs?</li>
+      <li>List three components of your organization's real K. Which could be cut 10× with
+          today's tools?</li>
+      <li>Where does batching in your world distort a demand signal someone else plans against?</li>
+    </ul>
+  </div>
+
+  <h2>Self-check</h2>
+
+  <div class="quiz" data-answer="b">
+    <p class="q">1. Demand quadruples (4×) while K and h stay fixed. The optimal batch size…</p>
+    <button class="opt" data-k="a">quadruples</button>
+    <button class="opt" data-k="b">doubles</button>
+    <button class="opt" data-k="c">stays the same</button>
+    <button class="opt" data-k="d">halves</button>
+    <p class="explain hidden">EOQ = √(2KD/h) — everything under a square root. 4× demand → √4 = 2×
+       batch size. Cycle stock grows slower than the business: a quiet economy of scale.</p>
+  </div>
+
+  <div class="quiz" data-answer="c">
+    <p class="q">2. Your EOQ says 500, but the supplier ships pallets of 600. Ordering 600
+       instead costs roughly…</p>
+    <button class="opt" data-k="a">20% more — a serious problem</button>
+    <button class="opt" data-k="b">nothing, the EOQ is only a legend</button>
+    <button class="opt" data-k="c">about 1–2% more — take the pallet</button>
+    <button class="opt" data-k="d">it's impossible to say</button>
+    <p class="explain hidden">The cost curve is flat near its bottom: ±20% on Q costs ~2%. Round to
+       the practical container and spend your energy on K and h instead.</p>
+  </div>
+
+  <div class="quiz" data-answer="a">
+    <p class="q">3. SMED (cutting changeover time from hours to minutes) affects the EOQ
+       equation by…</p>
+    <button class="opt" data-k="a">shrinking K, which shrinks the optimal batch and all cycle stock with it</button>
+    <button class="opt" data-k="b">raising h, which makes holding cheaper</button>
+    <button class="opt" data-k="c">raising D, which justifies bigger batches</button>
+    <button class="opt" data-k="d">nothing — changeovers aren't in the model</button>
+    <p class="explain hidden">Changeover cost IS the K of a production batch. Drive K down and
+       small batches become optimal — this is the EOQ math hiding inside lean's "one-piece flow."</p>
+  </div>
+
+  <div class="keybox">
+    <h4>Key takeaways</h4>
+    <ul>
+      <li>Cycle stock exists because of fixed costs: EOQ = √(2KD/h) balances ordering against holding.</li>
+      <li>The cost curve is flat — round Q to practical sizes and audit K and h instead.</li>
+      <li>The strategic lever is shrinking K (SMED, e-ordering): smaller honest batches, less
+          inventory, faster flow.</li>
+      <li>Batches distort demand signals — the fuel for Lesson 5's bullwhip.</li>
+    </ul>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="btn" href="lesson-3-risk-pooling.html">← Lesson 3: Risk Pooling</a>
+    <a class="btn primary" href="lesson-5-bullwhip.html">Lesson 5: The Bullwhip Effect →</a>
+  </div>
+
+  <footer class="site">Further reading: Harris (1913) · Shingo, <em>A Revolution in Manufacturing: The SMED System</em>.</footer>
+</div>
+<script src="js/quiz.js"></script>
+</body>
+</html>

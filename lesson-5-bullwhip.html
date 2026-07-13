@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 5: The Bullwhip Effect — Supply Chain Course</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="home" href="index.html">📦 Supply Chain Games</a>
+    <span class="crumb">/ <a href="course.html">Course</a> / Lesson 5</span>
+  </header>
+
+  <p class="kicker">Lesson 5 of 6 · Chain dynamics — the capstone</p>
+  <h1>The Bullwhip Effect</h1>
+  <p class="lede">Everything so far — variability (L1), forecasting under uncertainty (L2),
+     buffering (L3), batching (L4) — now happens <b>simultaneously, across four companies, with
+     delays in between</b>. The result is the most famous phenomenon in supply chain management:
+     tiny ripples in customer demand become violent waves upstream. You're about to cause it
+     yourself.</p>
+
+  <div class="objectives">
+    <h4>After this lesson you can</h4>
+    <ul>
+      <li>Define the bullwhip effect and measure it as a variance amplification ratio</li>
+      <li>Name the four operational causes (Lee et al.) and the behavioral one (Sterman)</li>
+      <li>Explain why smart, well-intentioned people produce it — structure over blame</li>
+      <li>Match each cause to its countermeasure, from POS sharing to everyday low pricing</li>
+    </ul>
+  </div>
+
+  <div class="lesson-body">
+  <h2>1. What it is</h2>
+  <p>Walk up a supply chain — retailer, wholesaler, distributor, factory — and plot each tier's
+     orders over time. In chain after chain, real data shows the same signature: <b>order
+     variability grows at every step upstream</b>. Procter &amp; Gamble coined the name when they
+     noticed diaper orders swinging wildly at the factory while babies consumed at an almost
+     perfectly steady rate. Measure it as:</p>
+  <p class="formula">Bullwhip ratio = σ(orders placed) / σ(demand received) &nbsp; — &gt;1 means you're amplifying</p>
+  <p>Ratios of 2 per tier are routine; compounding four tiers can turn a σ of 1.5 at the shelf
+     into a σ of 15 at the factory. The costs land everywhere at once: excess inventory <em>and</em>
+     stockouts (alternating!), overtime then idle capacity, expedited freight, and forecasts
+     nobody trusts. The 2020–21 pandemic swings in semiconductors, lumber, and shipping were the
+     bullwhip at planetary scale.</p>
+
+  <h2>2. Why it happens — four structural causes…</h2>
+  <p>Lee, Padmanabhan &amp; Whang (1997) showed the bullwhip needs no one to misbehave — four
+     rational practices generate it:</p>
+  <ul>
+    <li><b>Demand signal processing.</b> Each tier forecasts from the <em>orders it receives</em>,
+        not true end demand. When your customer over-reacts, you forecast their over-reaction and
+        add your own — error compounds tier by tier, and long lead times force you to project that
+        error further into the future.</li>
+    <li><b>Order batching</b> (Lesson 4). Lumpy orders make smooth demand look wild one tier up.</li>
+    <li><b>Price fluctuations.</b> Promotions and volume deals make buyers forward-buy: order
+        spikes that have nothing to do with consumption.</li>
+    <li><b>Rationing &amp; shortage gaming.</b> When supply looks tight, buyers inflate orders to
+        grab allocation, then cancel. The "demand" the factory sees is partly fiction — the
+        pandemic's phantom chip orders in miniature.</li>
+  </ul>
+
+  <h2>3. …and one behavioral cause</h2>
+  <p>Sterman's thousands of Beer Game trials add the human factor: under pressure, people
+     <b>neglect the supply line</b> — they forget (or distrust) what they've already ordered that
+     hasn't arrived yet, and order again. With a 3-week loop between deciding and receiving, that
+     double-ordering builds a hidden wave which lands just as the panic ends, flipping backlog
+     into glut. The remedy is mechanical, not moral: <b>inventory on order is inventory</b> —
+     count it. A base-stock policy does this automatically, which is why the disciplined bots in
+     the game stay calm through the same shock that wrecks human chains.</p>
+
+  <h2>4. Countermeasures — match the cure to the cause</h2>
+  <div class="table-scroll"><table class="data">
+    <thead><tr><th style="text-align:left">Cause</th><th style="text-align:left">Countermeasure</th></tr></thead>
+    <tbody>
+      <tr><td style="text-align:left">Demand signal processing</td><td style="text-align:left">Share POS data with every tier; single shared forecast (CPFR); vendor-managed inventory; cut lead times</td></tr>
+      <tr><td style="text-align:left">Order batching</td><td style="text-align:left">Shrink fixed order costs (L4!), ship mixed loads more often, EDI ordering</td></tr>
+      <tr><td style="text-align:left">Price fluctuations</td><td style="text-align:left">Everyday low pricing; end forward-buy promotions</td></tr>
+      <tr><td style="text-align:left">Shortage gaming</td><td style="text-align:left">Allocate on sales history, not order size; share capacity outlook; no free cancellation of inflated orders</td></tr>
+      <tr><td style="text-align:left">Supply-line neglect</td><td style="text-align:left">Order-up-to (base-stock) policies that count on-order stock; planner training; fewer, calmer decisions</td></tr>
+    </tbody>
+  </table></div>
+  <p>Notice the pattern: every fix either <b>shares truer information</b> or <b>shortens/steadies
+     the loop</b>. None of them is "try harder."</p>
+  </div>
+
+  <div class="play-banner">
+    <p class="kicker">Now play — the capstone, 30–45 minutes with debrief</p>
+    <h3><a href="beer-online.html">🍺 The Beer Game (multiplayer) →</a></h3>
+    <p>Best with 3–4 people on their own devices (<a href="beer-game.html">hot-seat/solo version
+       here</a>). Use Classic demand and do NOT discuss orders during play — local information is
+       the whole point. Facilitators: run it before teaching this lesson's section 2, and let the
+       debrief charts reveal the step demand. Competitive option: several rooms, lowest chain
+       cost wins via the <a href="compare.html">Comparison Board</a>.</p>
+  </div>
+
+  <div class="callout">
+    <h4>After the game — discuss or reflect</h4>
+    <ul>
+      <li>Before the reveal: what did you believe customer demand was doing? What was it actually
+          doing?</li>
+      <li>Find your chain's amplification ratio in the debrief. Which tier amplified most, and
+          what were they reacting to?</li>
+      <li>Locate each of the five causes in your own play. Be honest about supply-line neglect —
+          check weeks where you ordered while plenty was already in transit.</li>
+      <li>The bots with the same demand spent ~40% less. What exactly do they do differently —
+          and what stops your company from doing it?</li>
+      <li>Who in your real chain sees true end-customer demand? Who doesn't but should?</li>
+    </ul>
+  </div>
+
+  <h2>Self-check</h2>
+
+  <div class="quiz" data-answer="c">
+    <p class="q">1. A wholesaler receives orders with σ = 6 and places orders with σ = 15.
+       Its bullwhip ratio is…</p>
+    <button class="opt" data-k="a">0.4 — it dampens</button>
+    <button class="opt" data-k="b">9 — the difference</button>
+    <button class="opt" data-k="c">2.5 — it amplifies</button>
+    <button class="opt" data-k="d">21 — the sum</button>
+    <p class="explain hidden">15/6 = 2.5: this tier makes demand look 2.5× more variable to its
+       supplier than it already was. Chain a few of those and the factory lives in chaos.</p>
+  </div>
+
+  <div class="quiz" data-answer="b">
+    <p class="q">2. During a shortage scare, customers order double hoping to get half. Which
+       bullwhip cause is this, and what's the classic fix?</p>
+    <button class="opt" data-k="a">Demand signal processing — share POS data</button>
+    <button class="opt" data-k="b">Shortage gaming — allocate based on past sales, not order size</button>
+    <button class="opt" data-k="c">Order batching — reduce fixed order costs</button>
+    <button class="opt" data-k="d">Price fluctuation — everyday low pricing</button>
+    <p class="explain hidden">Inflated orders under rationing are shortage gaming. If allocation
+       follows sales history instead of order size, inflating your order buys nothing — the
+       incentive dies.</p>
+  </div>
+
+  <div class="quiz" data-answer="d">
+    <p class="q">3. In week 12 you have 0 on hand, backlog 20, and 35 cases already in transit
+       to you against steady demand of 8. Supply-line discipline says order about…</p>
+    <button class="opt" data-k="a">28 — cover the backlog plus demand</button>
+    <button class="opt" data-k="b">40 — order big, you're in crisis</button>
+    <button class="opt" data-k="c">0 — and also cancel some transit if you could</button>
+    <button class="opt" data-k="d">a number near 8 that counts the 35 as inventory you already own</button>
+    <p class="explain hidden">Position = on-hand − backlog + on-order = 0 − 20 + 35 = +15, already
+       nearly a healthy buffer above zero. Ordering "28 because it feels like crisis" is exactly
+       the double-count that builds the wave. Order near demand and let the pipeline land.</p>
+  </div>
+
+  <div class="keybox">
+    <h4>Key takeaways</h4>
+    <ul>
+      <li>Order variability amplifies upstream — measure it as σ(orders)/σ(demand), per tier.</li>
+      <li>Five causes: signal processing, batching, price deals, shortage gaming, supply-line
+          neglect. All rational or human — none requires a villain.</li>
+      <li>Every cure shares truer information or shortens/steadies the loop.</li>
+      <li>Inventory on order is inventory. Count it, and most of the panic maths disappears.</li>
+    </ul>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="btn" href="lesson-4-batching-eoq.html">← Lesson 4: Batching &amp; Cycle Stock</a>
+    <a class="btn primary" href="lesson-6-contracts.html">Lesson 6: Incentives &amp; Contracts →</a>
+  </div>
+
+  <footer class="site">Further reading: Lee, Padmanabhan &amp; Whang (1997) · Sterman (1989) · Forrester, <em>Industrial Dynamics</em> (1961).</footer>
+</div>
+<script src="js/quiz.js"></script>
+</body>
+</html>
