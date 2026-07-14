@@ -111,3 +111,12 @@ css/style.css         shared design system (light + dark)
 
 Settings → Pages → deploy from branch → root of `main`. The site is fully static and
 self-contained, so nothing else is needed.
+
+## License
+
+MIT — see [LICENSE](LICENSE). Use it, adapt it, host it on your intranet, teach with it.
+The vendored [PeerJS](https://peerjs.com) library (js/vendor/peerjs.min.js) is also MIT;
+its notice is preserved in [js/vendor/LICENSE-peerjs.txt](js/vendor/LICENSE-peerjs.txt).
+The classic game concepts (Beer Distribution Game, newsvendor problem, EOQ, etc.) are
+long-standing academic exercises; the implementations here are original, with sources
+cited in each game's footer and in the [facilitator guide](FACILITATOR_GUIDE.md).
