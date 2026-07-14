@@ -145,6 +145,24 @@ discovering it is the game.
 
 ---
 
+## One-hour Beer Game workshop (ready-made)
+
+[workshop-slides.html](workshop-slides.html) is a self-contained slide deck for a 60-minute
+session (built for a dealer-network audience; adapt freely). Arrow keys / click to advance,
+`F11` fullscreen, `P` prints all slides as handouts. Structure:
+
+- **Part A (before play):** setting, the three rules, join logistics — a dashed box on the
+  logistics slide is click-to-type for your room code. A "Now we play" divider stops you
+  from spoiling the reveal.
+- **Part B (after play):** the reveal, what the bullwhip is, why nobody was incompetent,
+  the dealer-network translation table, countermeasures, discussion prompts.
+
+Suggested run of show (10–15 participants): 5 min rules → 7 min join (4 groups, one device
+each, one multiplayer room, you host in facilitator mode and project the live board) →
+20 min playing **16 weeks** (weeks are now freely configurable, 8–104) → 8 min debrief
+charts on the projector → 12 min Part B slides → 8 min discussion. Rehearse the join flow
+once beforehand; if venue wifi blocks the game, phones on mobile data work.
+
 ## Teaching a full course
 
 [course.html](course.html) packages everything into a six-lesson course with a deliberate

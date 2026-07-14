@@ -49,7 +49,7 @@
     const humans = [...document.querySelectorAll("#role-pickers .seg")].map(
       seg => seg.querySelectorAll("button")[0].classList.contains("on"));
     if (!humans.some(Boolean)) { alert("Pick at least one human role."); return; }
-    const weeks = +$("cfg-weeks").value;
+    const weeks = Math.max(8, Math.min(104, Math.round(+$("cfg-weeks").value) || 36));
     const pattern = $("cfg-demand").value;
     const seed = (Math.random() * 2 ** 31) | 0;
     G = {

@@ -58,7 +58,7 @@
     create() {
       const name = $("host-name").value.trim() || "Host";
       this.cfg = {
-        weeks: +$("cfg-weeks").value,
+        weeks: Math.max(8, Math.min(104, Math.round(+$("cfg-weeks").value) || 36)),
         pattern: $("cfg-demand").value,
         botKind: $("cfg-bots").value,
         hostPlays: $("cfg-host-plays").checked,
