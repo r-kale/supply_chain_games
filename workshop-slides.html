@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Beer Game Workshop — dealer session slides</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+<style>
+  :root {
+    --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+    --accent: #2a78d6; --good: #0ca30c; --bad: #d03b3b; --border: rgba(11,11,11,0.10); --grid: #e1e0d9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink2: #c3c2b7;
+            --accent: #3987e5; --good: #0ca30c; --bad: #e66767; --border: rgba(255,255,255,0.12); --grid: #2c2c2a; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--page); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+
+  .slide {
+    display: none;
+    width: 100vw; height: 100vh;
+    padding: 6vh 8vw;
+    flex-direction: column;
+    justify-content: center;
+    cursor: default;
+  }
+  .slide.on { display: flex; }
+  .kicker { color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: clamp(14px, 1.6vw, 20px); margin: 0 0 1vh; }
+  h1 { font-size: clamp(34px, 5.2vw, 76px); line-height: 1.1; margin: 0 0 2vh; }
+  h2 { font-size: clamp(26px, 3.6vw, 52px); line-height: 1.15; margin: 0 0 3vh; }
+  p, li { font-size: clamp(18px, 2.2vw, 32px); line-height: 1.5; color: var(--ink2); }
+  li { margin: 1.2vh 0; }
+  b, strong { color: var(--ink); }
+  ul { margin: 0; padding-left: 1.2em; }
+  .big { font-size: clamp(22px, 2.8vw, 40px); }
+  .huge { font-size: clamp(40px, 7vw, 110px); font-weight: 700; color: var(--ink); }
+  .cols { display: flex; gap: 4vw; flex-wrap: wrap; }
+  .cols > div { flex: 1 1 300px; }
+  .box { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 2.5vh 2vw; }
+  .accent { color: var(--accent); }
+  .good { color: var(--good); }
+  .bad { color: var(--bad); }
+  .chain { display: flex; align-items: center; gap: 1.2vw; flex-wrap: wrap; font-size: clamp(16px, 2vw, 30px); font-weight: 600; }
+  .chain .node { background: var(--surface); border: 2px solid var(--border); border-radius: 12px; padding: 1.5vh 1.2vw; text-align: center; }
+  .chain .node.hl { border-color: var(--accent); }
+  .chain .arr { color: var(--muted); }
+  .foot { position: fixed; bottom: 2vh; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 3vw; font-size: 14px; color: var(--muted); pointer-events: none; }
+  .divider { align-items: center; text-align: center; }
+  table.t { border-collapse: collapse; width: 100%; }
+  table.t th, table.t td { text-align: left; padding: 1.2vh 1vw; border-bottom: 1px solid var(--grid); font-size: clamp(16px, 1.9vw, 28px); color: var(--ink2); }
+  table.t th { color: var(--ink); border-bottom: 2px solid var(--muted); }
+  .codebox { display: inline-block; border: 3px dashed var(--accent); border-radius: 14px; padding: 2vh 3vw; font: 700 clamp(40px, 6vw, 90px)/1 ui-monospace, Menlo, monospace; letter-spacing: .15em; color: var(--accent); min-width: 5em; text-align: center; }
+  .hint { font-size: clamp(13px, 1.3vw, 18px); color: var(--muted); }
+  @media print {
+    .slide { display: flex !important; height: auto; min-height: 90vh; page-break-after: always; }
+    .foot { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== PART A — BEFORE THE GAME ===================== -->
+
+<section class="slide">
+  <p class="kicker">John Deere Asia · Dealer Workshop</p>
+  <h1>The Beer Game</h1>
+  <p class="big">A 60-year-old MIT experiment. Four teams, one supply chain, one hour.<br>
+     Played by thousands of executives — and it gets <b>everyone</b>.</p>
+  <p class="hint">→ arrow keys or click to advance · F11 for fullscreen · P to print handouts</p>
+</section>
+
+<section class="slide">
+  <p class="kicker">The setup</p>
+  <h2>You run one tier of a beverage supply chain</h2>
+  <div class="chain" style="margin-bottom:4vh">
+    <div class="node">🏭 Factory<br><span class="hint">Group 4</span></div><span class="arr">→</span>
+    <div class="node">🚚 Distributor<br><span class="hint">Group 3</span></div><span class="arr">→</span>
+    <div class="node">📦 Wholesaler<br><span class="hint">Group 2</span></div><span class="arr">→</span>
+    <div class="node">🏪 Retailer<br><span class="hint">Group 1</span></div><span class="arr">→</span>
+    <div class="node hl">🛒 Customers</div>
+  </div>
+  <ul>
+    <li>Beer flows <b>down</b> the chain; orders flow <b>up</b> the chain.</li>
+    <li>Each group is <b>one company</b>. One device per group; decide together.</li>
+    <li>Your goal: <b>lowest total cost for your company</b>.</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <p class="kicker">The rules — that's all of them</p>
+  <h2>Each week: receive → ship → place ONE order</h2>
+  <div class="cols">
+    <div class="box">
+      <p><b>💰 Costs</b></p>
+      <ul>
+        <li>Holding stock: <b>$0.50</b>/case/week</li>
+        <li>Unfilled orders (backlog): <b>$1.00</b>/case/week — and must still be shipped later</li>
+      </ul>
+    </div>
+    <div class="box">
+      <p><b>⏱️ Delays</b></p>
+      <ul>
+        <li>Your order takes <b>1 week</b> to reach your supplier</li>
+        <li>Shipments take <b>2 weeks</b> to arrive</li>
+      </ul>
+    </div>
+  </div>
+  <p class="big" style="margin-top:4vh">🤫 You see <b>only your own</b> inventory and incoming orders.
+     <span class="bad"><b>No talking between groups. No showing screens.</b></span></p>
+</section>
+
+<section class="slide">
+  <p class="kicker">Logistics — 2 minutes</p>
+  <h2>Join your company</h2>
+  <div class="cols">
+    <div>
+      <ul>
+        <li>One phone or laptop per group</li>
+        <li>Open the workshop link → <b>Join a game</b></li>
+        <li>Team name = your group ("Retailers", …)</li>
+        <li>Enter the room code →</li>
+        <li>We play <b>~16 weeks</b>, about <b>30 seconds per week</b> — I'll call the pace</li>
+      </ul>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center">
+      <div class="codebox" id="room-code" contenteditable="true" spellcheck="false">·····</div>
+    </div>
+  </div>
+  <p class="hint">Facilitator: click the dashed box and type the room code once you've hosted the game.
+     If venue wifi misbehaves, switch phones to mobile data.</p>
+</section>
+
+<section class="slide divider">
+  <p class="huge">🍺</p>
+  <h1>Now we play</h1>
+  <p class="big">Slides resume after the game. No peeking ahead —<br>the next slide spoils it.</p>
+</section>
+
+<!-- ===================== PART B — AFTER THE GAME ===================== -->
+
+<section class="slide">
+  <p class="kicker">The reveal</p>
+  <h2>Before I show you — what do you think<br>customer demand was doing?</h2>
+  <p class="big">Take guesses out loud. Then we look at the debrief together.</p>
+  <p style="margin-top:4vh">Demand was <b>4 cases a week</b>… then one small step to <b>8</b>…
+     <span class="accent"><b>and it never changed again.</b></span></p>
+  <p class="hint">Facilitator: switch to the game debrief now — orders chart, amplification chart, costs — then come back.</p>
+</section>
+
+<section class="slide">
+  <p class="kicker">What you just built</p>
+  <h2>The bullwhip effect</h2>
+  <p class="big">Order variability <b>amplifies</b> at every step upstream.<br>
+     A ripple at the shelf becomes a wave at the factory.</p>
+  <ul style="margin-top:3vh">
+    <li>Named by <b>Procter &amp; Gamble</b>: wild diaper orders at the factory — while babies consumed steadily</li>
+    <li>Typical amplification: <b>2× per tier</b>, compounding</li>
+    <li>2020–21: semiconductors, freight, farm equipment — the bullwhip at global scale</li>
+    <li>The bill: excess stock <b>and</b> stockouts, overtime <b>then</b> idle plants, expedited freight, forecasts nobody trusts</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <p class="kicker">The uncomfortable truth</p>
+  <h2>Nobody in this room was incompetent</h2>
+  <p class="big">Sterman ran this game thousands of times at MIT — executives, students,
+     supply chain professors. <b>Almost every chain produces the bullwhip.</b></p>
+  <div class="box" style="margin-top:3vh">
+    <p style="margin:0">The <b>structure</b> did it: delays between action and effect ·
+       each tier seeing only its neighbor's orders · forecasts chasing forecasts ·
+       and under pressure, everyone <b>forgetting what they already ordered</b> and ordering again.</p>
+  </div>
+  <p style="margin-top:3vh">Blame the system, not the player — then <b>fix the system</b>.</p>
+</section>
+
+<section class="slide">
+  <p class="kicker">This is not just beer</p>
+  <h2>The dealer network version</h2>
+  <table class="t">
+    <tr><th>In the game</th><th>In our world</th></tr>
+    <tr><td>Ordering from your neighbor's orders</td><td>Planning from <b>network orders</b> instead of retail sales</td></tr>
+    <tr><td>Big lumpy orders</td><td><b>Pre-season / early-order programs</b> concentrating a year into a window</td></tr>
+    <tr><td>Panic over-ordering in shortage</td><td><b>Over-ordering hot models</b> to win allocation — then canceling</td></tr>
+    <tr><td>3-week loop felt like forever</td><td><b>Multi-month factory lead times</b> on wholegoods</td></tr>
+    <tr><td>Forgetting what was in transit</td><td>Ordering again while the <b>order board</b> already covers it</td></tr>
+  </table>
+</section>
+
+<section class="slide">
+  <p class="kicker">What actually fixes it</p>
+  <h2>Share truth. Shorten loops. Trust the pipeline.</h2>
+  <ul>
+    <li><b>Share retail data</b> — actual settlements/POS visible up the chain, not just orders</li>
+    <li><b>Order steadily</b> — smaller, regular orders beat quarter-end and program-window spikes</li>
+    <li><b>Count the order board as inventory</b> — on-order stock IS stock; don't order twice</li>
+    <li><b>Allocate on retail history</b>, not order size — kills the gaming incentive</li>
+    <li><b>Cut and stabilize lead times</b> — the shorter the loop, the smaller the whip</li>
+  </ul>
+  <p class="big" style="margin-top:3vh">In the game, disciplined ordering against identical demand costs
+     <span class="good"><b>~40% less</b></span>. That margin exists in real networks too.</p>
+</section>
+
+<section class="slide">
+  <p class="kicker">Discussion — 8 minutes</p>
+  <h2>Where does the bullwhip live<br>between your dealership and the factory?</h2>
+  <ul>
+    <li>Which of the five causes did you <b>feel</b> during the game?</li>
+    <li>Where do you see it in ordering — wholegoods? parts? peak season?</li>
+    <li>What <b>one change</b> — by you, or by John Deere — would calm the whip the most?</li>
+  </ul>
+</section>
+
+<section class="slide divider">
+  <h1>Thank you 🙏</h1>
+  <p class="big">Play again with your team — plus five more supply chain games and a full course:</p>
+  <p class="big"><b class="accent">r-kale.github.io/supply_chain_games</b></p>
+  <p class="hint">Beer Game (solo &amp; multiplayer) · Newsvendor · Risk Pooling · Batch Size · Dice Game · Contract Game</p>
+</section>
+
+<div class="foot"><span id="foot-hint">← → to navigate</span><span id="foot-count"></span></div>
+
+<script>
+(() => {
+  const slides = [...document.querySelectorAll(".slide")];
+  let i = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1), 10) || 1) - 1));
+
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle("on", k === i));
+    document.getElementById("foot-count").textContent = (i + 1) + " / " + slides.length;
+    history.replaceState(null, "", "#" + (i + 1));
+  }
+
+  document.addEventListener("keydown", e => {
+    if (e.target.isContentEditable) return; // typing the room code
+    if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(e.key)) { e.preventDefault(); show(i + 1); }
+    else if (["ArrowLeft", "ArrowUp", "PageUp"].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    else if (e.key === "Home") show(0);
+    else if (e.key === "End") show(slides.length - 1);
+    else if (e.key.toLowerCase() === "p") window.print();
+  });
+
+  document.addEventListener("click", e => {
+    if (e.target.isContentEditable || e.target.closest("a")) return;
+    const x = e.clientX / window.innerWidth;
+    show(x < 0.25 ? i - 1 : i + 1);
+  });
+
+  show(i);
+})();
+</script>
+</body>
+</html>

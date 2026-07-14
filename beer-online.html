@@ -49,12 +49,8 @@
           <input type="text" id="host-name" maxlength="20" placeholder="e.g. Rahul"
                  style="font:inherit;background:var(--surface-1);color:var(--text-primary);border:1px solid var(--baseline);border-radius:8px;padding:8px 10px;width:160px">
         </label>
-        <label class="field">Weeks
-          <select id="cfg-weeks">
-            <option value="24">24 (quick)</option>
-            <option value="36" selected>36 (recommended)</option>
-            <option value="52">52 (full)</option>
-          </select>
+        <label class="field">Weeks (8–104)
+          <input type="number" id="cfg-weeks" min="8" max="104" step="1" value="36">
         </label>
         <label class="field">Customer demand
           <select id="cfg-demand">

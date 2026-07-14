@@ -44,12 +44,8 @@
          <a href="beer-online.html">online multiplayer version</a> — no server needed.</p>
 
       <div class="field-row">
-        <label class="field">Weeks
-          <select id="cfg-weeks">
-            <option value="24">24 (quick)</option>
-            <option value="36" selected>36 (recommended)</option>
-            <option value="52">52 (full)</option>
-          </select>
+        <label class="field">Weeks (8–104)
+          <input type="number" id="cfg-weeks" min="8" max="104" step="1" value="36">
         </label>
         <label class="field">Customer demand
           <select id="cfg-demand">
