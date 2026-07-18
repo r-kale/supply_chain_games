@@ -20,13 +20,45 @@
   const { ROLES, ICONS } = E;
   const $ = id => document.getElementById(id);
 
+  // Bumped whenever the message protocol changes; the host rejects guests on
+  // an older cached page so mismatched bundles can't silently mis-play.
+  const PROTO = 2;
+
+  // STUN discovers a direct path; TURN relays traffic when no direct path
+  // exists (cellular NATs, wifi routers with client isolation). Without TURN,
+  // cross-network joins frequently fail. A dedicated relay from
+  // js/turn-config.js (see that file) is tried first when configured.
+  const DEFAULT_ICE = [
+    { urls: "stun:stun.l.google.com:19302" },
+    { urls: "stun:stun.cloudflare.com:3478" },
+    {
+      urls: [
+        "turn:openrelay.metered.ca:80",
+        "turn:openrelay.metered.ca:443",
+        "turn:openrelay.metered.ca:443?transport=tcp"
+      ],
+      username: "openrelayproject",
+      credential: "openrelayproject"
+    },
+    {
+      urls: ["turn:freeturn.net:3478", "turn:freeturn.net:5349"],
+      username: "free",
+      credential: "free"
+    }
+  ];
+
   // Optional self-hosted signaling server: beer-online.html?srv=host:port
   function peerOptions() {
+    const ice = Array.isArray(window.TURN_SERVERS) && window.TURN_SERVERS.length
+      ? [...window.TURN_SERVERS, ...DEFAULT_ICE]
+      : DEFAULT_ICE;
+    const base = { config: { iceServers: ice } };
     const srv = new URLSearchParams(location.search).get("srv");
-    if (!srv) return {}; // PeerJS free public broker
+    if (!srv) return base; // PeerJS free public broker
     const [host, port] = srv.split(":");
-    return { host, port: +port || 443, path: "/", key: "peerjs", secure: srv.startsWith("localhost") || srv.startsWith("127.") ? false : true };
+    return { ...base, host, port: +port || 443, path: "/", key: "peerjs", secure: srv.startsWith("localhost") || srv.startsWith("127.") ? false : true };
   }
+  window.__scgIce = peerOptions().config.iceServers; // test hook
 
   const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I
   const makeCode = () => Array.from({ length: 5 }, () => CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)]).join("");
@@ -103,6 +135,7 @@
       conn.on("data", msg => {
         conn._seen = Date.now(); // any message counts as a heartbeat
         if (msg && msg.type === "hello") {
+          if (msg.v !== PROTO) { conn.send({ type: "reject", reason: "Your page is an older cached version of the game — reload the page, then join again." }); setTimeout(() => conn.close(), 300); return; }
           if (this.started) { conn.send({ type: "reject", reason: "The game has already started." }); setTimeout(() => conn.close(), 300); return; }
           if (this.humanCount() >= 4) { conn.send({ type: "reject", reason: "The room is full (4 players)." }); setTimeout(() => conn.close(), 300); return; }
           conn._name = (msg.name || "Player").slice(0, 20);
@@ -272,26 +305,60 @@
       const code = $("join-code").value.trim().toUpperCase();
       this.name = $("join-name").value.trim() || "Player";
       if (code.length !== 5) { $("join-status").textContent = "Room codes are 5 characters."; return; }
-      $("join-status").textContent = "Connecting…";
+      $("join-status").textContent = "Connecting… (up to 15 seconds on slow networks)";
       $("btn-join").disabled = true;
+
+      // staged diagnosis: track how far the join got so a failure can say
+      // exactly what broke and what to do about it
+      this.brokerReached = false;  // matchmaking broker answered
+      this.channelOpened = false;  // WebRTC data channel to the host opened
+      this.welcomed = false;       // host sent its first app-level message
 
       const peer = new Peer(peerOptions());
       this.peer = peer;
+      // TURN relay negotiation is slower than a direct path — a short timeout
+      // would abandon connections that were about to succeed
+      this.joinTimer = setTimeout(() => this.diagnoseJoin(), 15000);
+
       peer.on("error", e => {
-        $("btn-join").disabled = false;
-        if (e.type === "peer-unavailable") $("join-status").textContent = "No room with that code — check it with your host.";
-        else fail("Connection error: " + e.type + ". A firewall may be blocking browser-to-browser connections — try another network.");
+        if (this.welcomed) return;
+        if (e.type === "peer-unavailable") {
+          clearTimeout(this.joinTimer);
+          try { peer.destroy(); } catch { }
+          $("btn-join").disabled = false;
+          $("join-status").textContent = "No room with that code — check it with your host, and that the host's tab is still open.";
+        }
+        // other error types can be transient during ICE — let the 15s diagnosis speak
       });
       peer.on("open", () => {
+        this.brokerReached = true;
         const conn = peer.connect(peerId(code), { reliable: true });
         this.conn = conn;
-        conn.on("open", () => conn.send({ type: "hello", name: this.name }));
+        conn.on("open", () => { this.channelOpened = true; conn.send({ type: "hello", name: this.name, v: PROTO }); });
         conn.on("data", msg => this.onMessage(msg));
-        conn.on("close", () => { if (!$("debrief").classList.contains("hidden")) return; fail("Lost the connection to the host."); });
+        conn.on("close", () => {
+          if (!$("debrief").classList.contains("hidden")) return;
+          if (this.welcomed) fail("Lost the connection to the host.");
+        });
       });
     },
 
+    diagnoseJoin() {
+      if (this.welcomed) return;
+      try { this.peer.destroy(); } catch { }
+      $("btn-join").disabled = false;
+      let msg;
+      if (!this.brokerReached)
+        msg = "Can't reach the connection broker — this network is blocking it. Try a different network, or switch this device to mobile data.";
+      else if (!this.channelOpened)
+        msg = "Found the room, but couldn't connect to the host. If this link opened inside WhatsApp or Instagram, open it in Safari or Chrome instead. On shared wifi the router may isolate devices — switching one device to mobile data fixes it.";
+      else
+        msg = "Connected, but the host didn't respond. Ask the host to check their tab is still open, then try again.";
+      $("join-status").textContent = "⚠️ " + msg;
+    },
+
     onMessage(msg) {
+      if (!this.welcomed) { this.welcomed = true; clearTimeout(this.joinTimer); }
       this.lastSeen = Date.now();
       if (!this.watch) {
         // if the host goes silent (closed tab, dead wifi), tell the player

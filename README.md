@@ -49,10 +49,25 @@ amplification per tier, net inventory swings, costs, and a bot benchmark on iden
 connect **peer-to-peer over WebRTC** (via the vendored PeerJS library), so there is no
 game server and nothing is stored anywhere. The free public PeerJS broker only performs
 the initial handshake. Guests who disconnect are seamlessly replaced by bots.
-Organizations that can't reach the public broker can self-host one
-(`npx peerjs --port 9000`) and point the page at it with `beer-online.html?srv=host:port`.
-Note: unusually strict corporate firewalls can block WebRTC entirely — a phone on mobile
-data is the workaround.
+
+Connection robustness:
+
+- Peers negotiate through **STUN plus public TURN relays**, so joins work across
+  networks and on wifi routers with client isolation (where direct paths fail).
+  For workshop-grade reliability, add a **dedicated TURN relay** in
+  `js/turn-config.js` (free [metered.ca](https://www.metered.ca/) account; details
+  in that file) — it is tried before the public relays.
+- Join failures are **diagnosed in stages** (broker unreachable / room not found /
+  host unreachable / host silent) with the specific fix in each message: open links
+  in a real browser rather than the WhatsApp/Instagram in-app browser; on
+  client-isolating wifi, switch one device to mobile data.
+- A **protocol version check** makes the host reject guests running a stale cached
+  page (with a "reload and rejoin" message), and a one-shot auto-reload guard
+  recovers pages whose scripts fail to load after a deploy.
+- Organizations that can't reach the public broker can self-host one
+  (`npx peerjs --port 9000`) and point the page at it with
+  `beer-online.html?srv=host:port`. Strict corporate firewalls can still block
+  WebRTC entirely — a phone on mobile data is the workaround.
 
 ### 📰 The Newsvendor Game
 Ten days running a bakery stand under a high-margin scenario (critical ratio 0.75 →
