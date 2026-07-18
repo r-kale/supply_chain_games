@@ -160,8 +160,21 @@ session (built for a dealer-network audience; adapt freely). Arrow keys / click 
 Suggested run of show (10–15 participants): 5 min rules → 7 min join (4 groups, one device
 each, one multiplayer room, you host in facilitator mode and project the live board) →
 20 min playing **16 weeks** (weeks are now freely configurable, 8–104) → 8 min debrief
-charts on the projector → 12 min Part B slides → 8 min discussion. Rehearse the join flow
-once beforehand; if venue wifi blocks the game, phones on mobile data work.
+charts on the projector → 12 min Part B slides → 8 min discussion.
+
+**Connection test matrix (run before the day):**
+
+1. Two devices on the same wifi — should join; if not, the router isolates clients:
+   move one device to mobile data (the app's error message says this too).
+2. One device on wifi + one on cellular — exercises the TURN relay path.
+3. Both on cellular — the toughest NAT case.
+4. Open the join link from inside WhatsApp — expect it to fail with a message telling
+   the player to open it in Safari/Chrome. That's working as intended; tell players to
+   use a real browser.
+
+Each case should either connect or show a specific, actionable error. For maximum
+reliability at a paid workshop, configure a dedicated TURN relay in `js/turn-config.js`
+(free metered.ca account — instructions in the file).
 
 ## Teaching a full course
 
