@@ -4,6 +4,8 @@ Interactive browser games for teaching core supply chain concepts — inspired b
 Beer Distribution Game. Each game puts players inside a classic supply chain dilemma,
 then debriefs them with charts built from their own session data.
 
+**▶ Play it live: [r-kale.github.io/supply_chain_games](https://r-kale.github.io/supply_chain_games/)**
+
 **Now a complete course:** [course.html](course.html) sequences six structured lessons —
 learning objectives, theory with worked examples, post-game discussion questions, and
 interactive self-check quizzes — each reinforced by one of the games:
@@ -39,7 +41,8 @@ No server, no accounts — the code is the data.
 ### 🍺 The Beer Game
 Four tiers — retailer, wholesaler, distributor, factory — each seeing only its own
 inventory and incoming orders. Order delay 1 week, shipping delay 2 weeks, holding cost
-$0.50/case/week, backlog $1.00/case/week. Bot players use either the Sterman (1989)
+$0.50/case/week, backlog $1.00/case/week; game length freely configurable (8–104 weeks —
+use ~16 for a one-hour workshop). Bot players use either the Sterman (1989)
 anchoring-and-adjustment heuristic (realistic, produces bullwhip) or a disciplined
 base-stock policy (the benchmark). The debrief reveals the hidden demand pattern, order
 amplification per tier, net inventory swings, costs, and a bot benchmark on identical demand.
@@ -105,31 +108,51 @@ curve, and why lean attacks the fixed cost (SMED) rather than tuning the batch.
 ## Running a workshop
 
 See [FACILITATOR_GUIDE.md](FACILITATOR_GUIDE.md) for timings, discussion questions, and
-the theory behind each debrief.
+the theory behind each debrief — including a ready-made one-hour Beer Game session with
+its own projector slide deck ([workshop-slides.html](workshop-slides.html)) and a
+pre-workshop connection test matrix.
 
 ## Repository layout
 
 ```
-index.html            landing page
-beer-game.html        + js/beer-game.js      bullwhip / Beer Game (solo & hot-seat)
-beer-online.html      + js/beer-online.js    Beer Game online multiplayer (WebRTC, serverless)
-js/beer-engine.js     shared Beer Game simulation, bots, and debrief renderer
-js/vendor/peerjs.min.js  vendored PeerJS 1.5.5 (MIT) — WebRTC peer connections
-newsvendor.html       + js/newsvendor.js     newsvendor problem
-risk-pooling.html     + js/risk-pooling.js   risk pooling challenge
-dice-game.html        + js/dice-game.js      variability / The Goal dice game
-contract-game.html    + js/contract-game.js  double marginalization / buyback contracts
-batch-game.html       + js/batch-game.js     EOQ / batch sizing
-compare.html          + js/compare.js        facilitator leaderboards from result codes
-js/results.js         result-code encode/decode + share widget
-js/charts.js          tiny SVG chart library (lines, bars, tooltips, dark mode)
-css/style.css         shared design system (light + dark)
+index.html              landing page
+course.html             course home: syllabus, sequencing rationale, assessment ideas
+lesson-1 … lesson-6     six lesson pages (objectives, theory, play banner, quiz)
+workshop-slides.html    one-hour workshop slide deck (projector-ready, printable)
+compare.html            + js/compare.js       facilitator leaderboards from result codes
+
+beer-game.html          + js/beer-game.js     bullwhip / Beer Game (solo & hot-seat)
+beer-online.html        + js/beer-online.js   Beer Game online multiplayer (WebRTC, serverless)
+newsvendor.html         + js/newsvendor.js    newsvendor problem
+risk-pooling.html       + js/risk-pooling.js  risk pooling challenge
+dice-game.html          + js/dice-game.js     variability / The Goal dice game
+contract-game.html      + js/contract-game.js double marginalization / buyback contracts
+batch-game.html         + js/batch-game.js    EOQ / batch sizing
+
+js/beer-engine.js       shared Beer Game simulation, bots, and debrief renderer
+js/charts.js            tiny SVG chart library (lines, bars, tooltips, dark mode)
+js/results.js           result-code encode/decode + share widget
+js/quiz.js              interactive self-check quizzes for lesson pages
+js/turn-config.js       optional dedicated TURN relay config (see file)
+js/vendor/peerjs.min.js vendored PeerJS 1.5.5 (MIT; notice in LICENSE-peerjs.txt)
+css/style.css           shared design system (light + dark)
+
+.github/workflows/pages.yml  Pages deploy with TURN credential injection from secrets
+LICENSE · ROADMAP.md · FACILITATOR_GUIDE.md
 ```
 
 ## Hosting on GitHub Pages
 
-Settings → Pages → deploy from branch → root of `main`. The site is fully static and
-self-contained, so nothing else is needed.
+This repo deploys via **GitHub Actions** (Settings → Pages → Source → GitHub Actions):
+`.github/workflows/pages.yml` publishes the site on every push to `main`, injecting the
+dedicated TURN relay credentials from repository secrets into `js/turn-config.js`. Forks
+without the secrets deploy identically on the built-in public relays — or use plain
+"deploy from a branch"; the site is fully static and needs no build.
+
+## What's next
+
+See [ROADMAP.md](ROADMAP.md) — prioritized ideas from live-class instrumentation to new
+games (resilience, forecasting) and course progression tracking.
 
 ## License
 
