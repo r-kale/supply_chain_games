@@ -22,6 +22,13 @@
    ];
 
    Leave the array empty to use only the built-in public servers.
+
+   Deploying via GitHub Pages? You don't need to edit this file:
+   set repository secrets TURN_URL (comma-separated urls ok),
+   TURN_USERNAME, and TURN_CREDENTIAL, switch Settings → Pages →
+   Source to "GitHub Actions", and .github/workflows/pages.yml
+   injects them here at deploy time — keeping credentials out of
+   git history so they can be rotated by updating the secrets.
    ============================================================ */
 
 window.TURN_SERVERS = [];

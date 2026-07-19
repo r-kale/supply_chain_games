@@ -1,0 +1,70 @@
+# Deploys the site to GitHub Pages, injecting the dedicated TURN relay
+# credentials from repository secrets (TURN_URL / TURN_USERNAME /
+# TURN_CREDENTIAL) into js/turn-config.js at deploy time.
+#
+# Requires Settings -> Pages -> Build and deployment -> Source = "GitHub Actions".
+# Note: TURN credentials are necessarily visible in the deployed JS (every
+# player's browser needs them to connect) - the protection is the domain lock
+# on the metered.ca key. This workflow keeps them out of git history so they
+# can be rotated by just updating the secrets.
+
+name: Deploy Pages with TURN config
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Inject TURN credentials into js/turn-config.js
+        env:
+          TURN_URL: ${{ secrets.TURN_URL }}
+          TURN_USERNAME: ${{ secrets.TURN_USERNAME }}
+          TURN_CREDENTIAL: ${{ secrets.TURN_CREDENTIAL }}
+        run: |
+          node -e '
+            const fs = require("fs");
+            const raw = (process.env.TURN_URL || "").trim();
+            if (!raw) {
+              console.log("No TURN_URL secret set - shipping the default (public relays only).");
+              process.exit(0);
+            }
+            const urls = raw.split(",").map(s => s.trim()).filter(Boolean);
+            const server = {
+              urls: urls.length > 1 ? urls : urls[0],
+              username: process.env.TURN_USERNAME || "",
+              credential: process.env.TURN_CREDENTIAL || ""
+            };
+            const body =
+              "/* Generated at deploy time from repository secrets - do not edit here.\n" +
+              "   Source template: js/turn-config.js in the repo. */\n" +
+              "window.TURN_SERVERS = " + JSON.stringify([server], null, 2) + ";\n";
+            fs.writeFileSync("js/turn-config.js", body);
+            console.log("Injected dedicated TURN relay with", urls.length, "url(s).");
+          '
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

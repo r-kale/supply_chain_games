@@ -54,9 +54,13 @@ Connection robustness:
 
 - Peers negotiate through **STUN plus public TURN relays**, so joins work across
   networks and on wifi routers with client isolation (where direct paths fail).
-  For workshop-grade reliability, add a **dedicated TURN relay** in
-  `js/turn-config.js` (free [metered.ca](https://www.metered.ca/) account; details
-  in that file) — it is tried before the public relays.
+  For workshop-grade reliability, add a **dedicated TURN relay** (free
+  [metered.ca](https://www.metered.ca/) account, key locked to your domain):
+  either fill in `js/turn-config.js` directly, or — keeping credentials out of
+  git history — set repository secrets `TURN_URL`/`TURN_USERNAME`/`TURN_CREDENTIAL`
+  and switch Pages to deploy via GitHub Actions
+  (`.github/workflows/pages.yml` injects them at deploy time). The dedicated
+  relay is tried before the public ones.
 - Join failures are **diagnosed in stages** (broker unreachable / room not found /
   host unreachable / host silent) with the specific fix in each message: open links
   in a real browser rather than the WhatsApp/Instagram in-app browser; on
