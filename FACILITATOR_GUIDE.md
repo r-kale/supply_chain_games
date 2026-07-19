@@ -4,6 +4,9 @@ How to run each game as a team learning session. Every game ends with a built-in
 screen generated from the session's own data — your job as facilitator is mostly to set
 up the experience, protect the surprise, and lead the discussion afterward.
 
+The site is live at **[r-kale.github.io/supply_chain_games](https://r-kale.github.io/supply_chain_games/)** —
+send participants there directly; nothing to install.
+
 **Tournaments:** every game's debrief has a **Copy result code** button. Have each team
 paste its code into the chat (or read it out); paste them all into the
 [Comparison Board](compare.html) and project the leaderboards. Nothing is uploaded —
@@ -108,7 +111,7 @@ Collect predictions before starting — write a few on a whiteboard.
 
 ---
 
-## 🤝 The Contract Game (incentives &amp; coordination) — 25–35 min with discussion
+## 🤝 The Contract Game (incentives & coordination) — 25–35 min with discussion
 
 **Setup:** solo or pairs, 8 seasons. Frame it plainly: "You're the manufacturer;
 maximize *your* profit." Don't mention buybacks — the input field is there, and
@@ -159,8 +162,8 @@ session (built for a dealer-network audience; adapt freely). Arrow keys / click 
 
 Suggested run of show (10–15 participants): 5 min rules → 7 min join (4 groups, one device
 each, one multiplayer room, you host in facilitator mode and project the live board) →
-20 min playing **16 weeks** (weeks are now freely configurable, 8–104) → 8 min debrief
-charts on the projector → 12 min Part B slides → 8 min discussion.
+20 min playing **16 weeks** (game length is freely configurable, 8–104 weeks) → 8 min
+debrief charts on the projector → 12 min Part B slides → 8 min discussion.
 
 **Connection test matrix (run before the day):**
 
@@ -173,8 +176,9 @@ charts on the projector → 12 min Part B slides → 8 min discussion.
    use a real browser.
 
 Each case should either connect or show a specific, actionable error. For maximum
-reliability at a paid workshop, configure a dedicated TURN relay in `js/turn-config.js`
-(free metered.ca account — instructions in the file).
+reliability at a paid workshop, configure a dedicated TURN relay — either directly in
+`js/turn-config.js` or via the repository secrets consumed by the Pages deploy workflow
+(free metered.ca account; instructions in that file and in the README).
 
 ## Teaching a full course
 
