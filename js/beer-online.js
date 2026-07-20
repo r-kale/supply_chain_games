@@ -487,8 +487,80 @@
   }
 
   /* ================================================================
+     connection self-test — probes each configured ICE server from
+     THIS device and reports which candidate types come back.
+     srflx = STUN worked (direct path possible); relay = TURN worked
+     (connection possible even across hostile networks).
+     ================================================================ */
+
+  async function probeIceServer(server, ms) {
+    const types = new Set();
+    let pc;
+    try { pc = new RTCPeerConnection({ iceServers: [server] }); }
+    catch { return { error: "rejected by browser", types } }
+    pc.createDataChannel("probe");
+    pc.onicecandidate = e => {
+      if (e.candidate) {
+        const m = / typ (\w+)/.exec(e.candidate.candidate);
+        if (m) types.add(m[1]);
+      }
+    };
+    try { await pc.setLocalDescription(await pc.createOffer()); } catch { }
+    await new Promise(r => setTimeout(r, ms));
+    pc.close();
+    return { types };
+  }
+
+  async function runIceTest() {
+    const btn = $("btn-icetest");
+    btn.disabled = true;
+    $("icetest-status").textContent = "Testing… (~8 seconds)";
+    $("icetest-verdict").textContent = "";
+    const servers = peerOptions().config.iceServers;
+    const dedicated = new Set((Array.isArray(window.TURN_SERVERS) ? window.TURN_SERVERS : [])
+      .flatMap(s => Array.isArray(s.urls) ? s.urls : [s.urls]));
+    const results = await Promise.all(servers.map(s => probeIceServer(s, 7000)));
+
+    let anyStun = false, anyRelay = false, dedicatedRelay = null;
+    let h = "<thead><tr><th style='text-align:left'>Server</th><th style='text-align:left'>Kind</th><th style='text-align:left'>Result</th></tr></thead><tbody>";
+    servers.forEach((s, i) => {
+      const urls = Array.isArray(s.urls) ? s.urls : [s.urls];
+      const isTurn = urls.some(u => /^turns?:/i.test(u));
+      const isDedicated = urls.some(u => dedicated.has(u));
+      const r = results[i];
+      const ok = r.error ? false : (isTurn ? r.types.has("relay") : r.types.has("srflx"));
+      if (!isTurn && ok) anyStun = true;
+      if (isTurn && ok) anyRelay = true;
+      if (isTurn && isDedicated) dedicatedRelay = ok;
+      const host = (urls[0].split(":")[1] || urls[0]).replace(/^\/\//, "");
+      h += `<tr><td style="text-align:left">${host}${isDedicated ? " <b>(dedicated)</b>" : ""}</td>
+        <td style="text-align:left">${isTurn ? "TURN relay" : "STUN"}</td>
+        <td style="text-align:left">${r.error ? "⚠️ " + r.error : ok ? "✅ working" : "❌ no " + (isTurn ? "relay" : "srflx") + " candidate"}</td></tr>`;
+    });
+    $("icetest-table").innerHTML = h + "</tbody>";
+    $("icetest-table").classList.remove("hidden");
+    $("icetest-status").textContent = "";
+    btn.disabled = false;
+
+    let verdict;
+    if (anyRelay) {
+      verdict = "✅ A relay is reachable — joins from this device should work on any network." +
+        (dedicatedRelay === false ? " (Note: the dedicated relay failed and a public one is covering — check the metered.ca credentials and domain lock.)" : "");
+    } else if (dedicatedRelay === false) {
+      verdict = "❌ The dedicated relay refused this device — on metered.ca, verify you copied the TURN username/password (not the API key) and that the domain lock matches r-kale.github.io exactly. Public relays also failed, so cross-network joins will not work until this is fixed.";
+    } else if (anyStun) {
+      verdict = "⚠️ STUN works but no TURN relay is reachable: joins succeed on open networks but fail across strict ones (or client-isolated wifi). Configure a dedicated relay (js/turn-config.js / repo secrets).";
+    } else {
+      verdict = "❌ This network blocks WebRTC entirely (not even STUN). Switch this device to mobile data or another network.";
+    }
+    $("icetest-verdict").textContent = verdict;
+  }
+
+  /* ================================================================
      wire up
      ================================================================ */
+
+  $("btn-icetest").addEventListener("click", runIceTest);
 
   $("btn-go-host").addEventListener("click", () => show("host-setup"));
   $("btn-go-join").addEventListener("click", () => show("join-setup"));

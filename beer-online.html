@@ -51,6 +51,19 @@ window.addEventListener("error", e => {
        WhatsApp or Instagram; if devices on the same wifi can't connect, the router is isolating
        them — switch one device to mobile data. Strict corporate firewalls can block
        browser-to-browser connections entirely.</p>
+
+    <div class="card" style="margin-top:16px">
+      <h3 style="margin-top:0">🔧 Connection self-test</h3>
+      <p class="muted">Checks whether <b>this device</b> can reach the servers the game connects
+         through. If a join fails with "couldn't connect to the host," run this on both devices
+         and compare.</p>
+      <div class="actions">
+        <button id="btn-icetest">Test this device's connection</button>
+        <span class="muted" id="icetest-status"></span>
+      </div>
+      <div class="table-scroll"><table class="data hidden" id="icetest-table"></table></div>
+      <p class="muted" id="icetest-verdict"></p>
+    </div>
   </section>
 
   <!-- ================= HOST SETUP ================= -->
