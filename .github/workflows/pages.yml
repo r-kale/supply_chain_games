@@ -46,11 +46,22 @@ jobs:
               console.log("No TURN_URL secret set - shipping the default (public relays only).");
               process.exit(0);
             }
-            const urls = raw.split(",").map(s => s.trim()).filter(Boolean);
+            const urls = raw.split(/[,\s]+/).map(s => s.trim()).filter(Boolean);
+            const bad = urls.filter(u => !/^turns?:/i.test(u));
+            if (bad.length) {
+              console.error("FAIL: " + bad.length + " TURN_URL entr" + (bad.length === 1 ? "y" : "ies") +
+                " missing the turn:/turns: scheme prefix. Copy the full urls from the metered dashboard (turn:...).");
+              process.exit(1);
+            }
+            if (!process.env.TURN_USERNAME || !process.env.TURN_CREDENTIAL) {
+              console.error("FAIL: TURN_USERNAME and/or TURN_CREDENTIAL secret is empty. " +
+                "Browsers reject TURN servers without credentials - fix the secrets before deploying.");
+              process.exit(1);
+            }
             const server = {
               urls: urls.length > 1 ? urls : urls[0],
-              username: process.env.TURN_USERNAME || "",
-              credential: process.env.TURN_CREDENTIAL || ""
+              username: process.env.TURN_USERNAME,
+              credential: process.env.TURN_CREDENTIAL
             };
             const body =
               "/* Generated at deploy time from repository secrets - do not edit here.\n" +
