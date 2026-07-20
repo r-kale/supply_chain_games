@@ -41,6 +41,11 @@ jobs:
         run: |
           node -e '
             const fs = require("fs");
+            const committed = fs.readFileSync("js/turn-config.js", "utf8");
+            if (!/window\.TURN_SERVERS\s*=\s*\[\s*\]/.test(committed)) {
+              console.log("Committed turn-config.js already has a dedicated relay - keeping it (secrets ignored).");
+              process.exit(0);
+            }
             const raw = (process.env.TURN_URL || "").trim();
             if (!raw) {
               console.log("No TURN_URL secret set - shipping the default (public relays only).");
