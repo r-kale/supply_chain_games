@@ -47,11 +47,33 @@
     }
   ];
 
+  // Chrome THROWS on RTCPeerConnection construction if an ICE entry has a url
+  // without a stun:/turn:/turns: scheme, or a TURN url with empty credentials.
+  // One bad injected value must degrade to "that entry is skipped", never
+  // "nobody can connect" — so sanitize everything before use.
+  function sanitizeIce(list) {
+    const out = [];
+    for (const s of list || []) {
+      if (!s || !s.urls) continue;
+      const urls = (Array.isArray(s.urls) ? s.urls : [s.urls])
+        .filter(u => typeof u === "string" && /^(stun|turn|turns):/i.test(u.trim()))
+        .map(u => u.trim());
+      if (!urls.length) { console.warn("Ignoring ICE entry with no valid stun:/turn:/turns: url", s.urls); continue; }
+      const isTurn = urls.some(u => /^turns?:/i.test(u));
+      if (isTurn && (!s.username || !s.credential)) { console.warn("Ignoring TURN entry with empty credentials", urls[0]); continue; }
+      const entry = { urls: urls.length > 1 ? urls : urls[0] };
+      if (s.username) { entry.username = s.username; entry.credential = s.credential; }
+      out.push(entry);
+    }
+    return out.length ? out : DEFAULT_ICE;
+  }
+
   // Optional self-hosted signaling server: beer-online.html?srv=host:port
   function peerOptions() {
-    const ice = Array.isArray(window.TURN_SERVERS) && window.TURN_SERVERS.length
-      ? [...window.TURN_SERVERS, ...DEFAULT_ICE]
-      : DEFAULT_ICE;
+    const ice = sanitizeIce([
+      ...(Array.isArray(window.TURN_SERVERS) ? window.TURN_SERVERS : []),
+      ...DEFAULT_ICE
+    ]);
     const base = { config: { iceServers: ice } };
     const srv = new URLSearchParams(location.search).get("srv");
     if (!srv) return base; // PeerJS free public broker
