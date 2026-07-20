@@ -562,6 +562,15 @@
 
   $("btn-icetest").addEventListener("click", runIceTest);
 
+  // the join/error screens link back to the self-test on the home screen
+  function gotoIceTest(e) {
+    e.preventDefault();
+    show("home");
+    $("btn-icetest").scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  $("link-icetest-join").addEventListener("click", gotoIceTest);
+  $("link-icetest-err").addEventListener("click", gotoIceTest);
+
   $("btn-go-host").addEventListener("click", () => show("host-setup"));
   $("btn-go-join").addEventListener("click", () => show("join-setup"));
   $("btn-create").addEventListener("click", () => Host.create());
