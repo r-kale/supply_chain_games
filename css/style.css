@@ -370,6 +370,26 @@ footer.site {
   font-size: 13px;
 }
 
+/* ---------- connection banner (multiplayer) ---------- */
+
+.banner {
+  background: var(--surface-1);
+  border: 1px solid var(--status-critical);
+  border-left: 4px solid var(--status-critical);
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin: 12px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.banner.info {
+  border-color: var(--accent);
+  border-left-color: var(--accent);
+  font-weight: 500;
+}
+
 /* ---------- course & lessons ---------- */
 
 .kicker {

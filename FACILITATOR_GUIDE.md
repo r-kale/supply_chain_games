@@ -29,7 +29,13 @@ General tips:
 - *Online multiplayer (best when everyone has a device):* open
   [beer-online.html](beer-online.html), host a room, share the 5-letter code (phones work).
   Uncheck "I'll play a role too" to facilitate: you get a live board showing who has
-  ordered each week and the chain cost so far. Guests who drop are replaced by bots.
+  ordered each week and the chain cost so far.
+  **Tell players not to worry about drops:** a locked phone, a reload, or a dead lift
+  doesn't lose their seat — it's held for 3 minutes and resumes automatically. A bot
+  covers their order after ~40 seconds so the room keeps moving; your board shows
+  `📴 reconnecting…` while that happens. Keep **your own** tab open — you can switch apps
+  briefly (the room reconnects when you return), but if the phone/OS kills your tab
+  entirely, the room is gone and you'll need a fresh room code.
 - *Hot-seat (one shared machine):* players pass it each week; hand-off screens keep each
   player's numbers private. 36 weeks takes ~25 minutes.
 - *Tournament (larger groups):* split into teams of 1–4, one room or machine each, same

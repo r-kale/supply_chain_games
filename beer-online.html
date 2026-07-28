@@ -20,6 +20,8 @@ window.addEventListener("error", e => {
 </head>
 <body>
 <div class="wrap">
+  <div id="conn-banner" class="banner hidden"></div>
+
   <header class="site-header">
     <a class="home" href="index.html">📦 Supply Chain Games</a>
     <span class="crumb">/ The Beer Game · online</span>
@@ -129,6 +131,13 @@ window.addEventListener("error", e => {
       <p class="muted">Room code — share it with your players</p>
       <h2 style="font:700 44px ui-monospace,Menlo,monospace;letter-spacing:6px;margin:6px 0" id="lobby-code"></h2>
       <p class="muted" id="lobby-link"></p>
+      <div class="actions" style="justify-content:center">
+        <button id="btn-share" class="hidden">📤 Share invite</button>
+        <button id="btn-copy">📋 Copy link</button>
+      </div>
+      <p class="hidden" id="copy-fallback">
+        <input readonly id="copy-url" style="width:100%;font:14px ui-monospace,Menlo,monospace;text-align:center">
+      </p>
     </div>
     <div class="card">
       <h3 style="margin-top:0">Players</h3>
