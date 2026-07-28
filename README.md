@@ -51,7 +51,26 @@ amplification per tier, net inventory swings, costs, and a bot benchmark on iden
 (phones work). The host's browser runs the game and is the source of truth; players
 connect **peer-to-peer over WebRTC** (via the vendored PeerJS library), so there is no
 game server and nothing is stored anywhere. The free public PeerJS broker only performs
-the initial handshake. Guests who disconnect are seamlessly replaced by bots.
+the initial handshake.
+
+Built for phones, which lock, background, and lose signal:
+
+- **A seat belongs to a player, not a connection.** Each player holds a token (kept in
+  `sessionStorage`); dropping out, reloading the page, or reopening it resumes the same
+  seat automatically. Reconnection retries with backoff behind a "reconnecting…" banner.
+- **The room never stalls.** A disconnected seat holds the week for ~40 seconds, then a
+  bot places that week's order. The seat itself stays theirs for **3 minutes** before
+  converting to a bot for good.
+- **Backgrounded phones are safe.** A hidden tab is never judged for going quiet (it
+  hears nothing by design), and returning to the foreground grants a fresh grace period
+  and reconnects if needed.
+- **The host can app-switch.** The host heals its own broker registration after
+  disconnects and on returning to the foreground, refreshing every player's liveness
+  first so a returning host never mass-evicts the room. Sharing the invite via the
+  native share sheet (or the copy-link fallback) avoids app-switching entirely.
+- **Known limit:** the host's tab *is* the game server. Brief absences are fine, but if
+  the OS kills the host's tab (very long absence, low memory) or it's closed, the room
+  is gone — authoritative state lives only in that browser's memory.
 
 Connection robustness:
 
