@@ -160,9 +160,11 @@ discovering it is the game.
 session (built for a dealer-network audience; adapt freely). Arrow keys / click to advance,
 `F11` fullscreen, `P` prints all slides as handouts. Structure:
 
-- **Part A (before play):** setting, the three rules, join logistics — a dashed box on the
-  logistics slide is click-to-type for your room code. A "Now we play" divider stops you
-  from spoiling the reveal.
+- **Part A (before play):** setting, the three rules, an animated "one order's round trip"
+  slide that loops an order slip and a beer shipment through the delays (so players *feel*
+  the 3-week loop before playing — it shows mechanics only, no bullwhip spoiler), and join
+  logistics — a dashed box on the logistics slide is click-to-type for your room code.
+  A "Now we play" divider stops you from spoiling the reveal.
 - **Part B (after play):** the reveal, what the bullwhip is, why nobody was incompetent,
   the dealer-network translation table, countermeasures, discussion prompts.
 
