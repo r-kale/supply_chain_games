@@ -1,0 +1,8 @@
+# Internal / non-public working files kept alongside the site but never published.
+# This repo deploys to GitHub Pages, so anything committed here is world-readable.
+program-proposal.html
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
